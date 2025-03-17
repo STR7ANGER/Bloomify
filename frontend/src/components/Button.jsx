@@ -9,7 +9,7 @@ const Button = () => {
   }
 
   return (
-    <button className='border border-red-500' onClick={handleClick}>Go to About Page</button>
+    <button className='border border-red-500' onClick={handleClick}>About</button>
   )
 }
 

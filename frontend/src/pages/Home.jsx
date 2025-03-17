@@ -5,8 +5,7 @@ import Button from '../components/Button';
 const Home = () => {
   return (
     <div>
-      <p>Welcome</p>
-      <Button />
+      <p className='text-8xl font-bold text-red-500 text-center uppercase'>Test</p>
       <img className='h-[220px] w-[220px]' src={bloomifyBlack} alt="logo" />
     </div>
   )
