@@ -1,8 +1,11 @@
 import React from 'react'
+import Home from './sections/Home'
 
 const App = () => {
   return (
-    <div>App</div>
+    <main className='scroll-hide'>
+      <Home />
+    </main>
   )
 }
 

@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        background: white;
+        color: black;
+    }
+}
+
+@layer components {
+  .scroll-hide {
+    overflow: hidden;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+@layer utilities {
+}
