@@ -1,22 +1,24 @@
-import React from 'react'
-import bloomifyBlack from '../assets/logos/bloomify-black.png'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import bloomifyBlack from '../assets/logos/bloomify-black.png';
+import Button from './Button';
 
 const Nav = () => {
   return (
     <header>
-      <div className='w-full py-8'>
+      <div className='w-full py-8 bg-white shadow-md drop-shadow-lg'>
       <div className='relative'>
         <div className='flex justify-between items-center py-4 px-8'>
-          <div className='absolute w-200 h-50 flex items-center'>
+          <Link to="/" className='absolute w-[300px] h-[300px] flex items-center'>
             <img src={bloomifyBlack} alt="logo" className='h-full object-contain'/>
-          </div>
-          <div className='absolute flex space-x-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-            <a href='#' className='text-lg'>Home</a>
-            <a href='#' className='text-lg'>About</a>
-            <a href='#' className='text-lg'>Contact</a>
+          </Link>
+          <div className='absolute flex space-x-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+            <Link to="/products" className='text-xl'>Products</Link>
+            <Link to="/about" className='text-xl'>About</Link>
+            <Link to="/contact" className='text-xl'>Contact</Link>
           </div>
           <div className='absolute right-8'>
-            <a href="">Sign Up</a>
+            <Button to="/signup">Sign Up</Button>
           </div>
         </div>
       </div>

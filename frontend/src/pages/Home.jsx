@@ -1,14 +1,18 @@
-import React from 'react'
-import bloomifyBlack from '../assets/logos/bloomify-black.png';
-import Button from '../components/Button';
+import React from "react";
+import bloomifyBlack from "../assets/logos/bloomify-black.png";
+import Button from "../components/Button";
+import Hero from "../sections/Hero";
+import AboutBloomify from "../sections/AboutBloomify";
+import TopProducts from "../sections/TopProducts";
 
 const Home = () => {
   return (
-    <div>
-      <p className='text-8xl font-bold text-red-500 text-center uppercase'>Test</p>
-      <img className='h-[220px] w-[220px]' src={bloomifyBlack} alt="logo" />
-    </div>
-  )
-}
+    <>
+      <Hero />
+      <AboutBloomify />
+      <TopProducts />
+    </>
+  );
+};
 
-export default Home
+export default Home;
