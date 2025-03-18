@@ -25,7 +25,7 @@ const Nav = () => {
     <header>
       <div
         className={clsx(
-          "fixed w-full py-8 bg-white transition-all duration-300 z-50",
+          "fixed w-full py-8 bg-white transition-all duration-300 z-50 backdrop-blur-md",
           hasScrolled && "bg-white/80 bg-opacity-90 backdrop-blur-md"
         )}
       >
@@ -33,7 +33,7 @@ const Nav = () => {
           <div className="flex justify-between items-center py-4 px-8">
             <Link
               to="/"
-              className="absolute w-[300px] h-[300px] flex items-center"
+              className="absolute w-80 h-auto flex items-center"
             >
               <img
                 src={bloomifyBlack}

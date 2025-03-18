@@ -7,8 +7,14 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center h-screen ">
       <div className="bg-white shadow-lg drop-shadow-xl p-6 w-[40rem] text-center border border-gray-200 rounded-2xl">
-        <Link to="/" className="flex justify-center">
-          <img src={bloomifyBlack} className="w-[25rem] h-auto" alt="" />
+        <Link to="/">
+          <div className="flex justify-center mb-10">
+            <img
+              src={bloomifyBlack}
+              className="w-[25rem] h-auto"
+              alt="bloomify"
+            />
+          </div>
         </Link>
         <div className="grid grid-cols-2 gap-2">
           <input
@@ -35,7 +41,6 @@ const Login = () => {
           </div>
 
           <p className="text-center col-span-2 mt-5 font-light">
-            Already have an account?{" "}
             <Link to="/" className="text-blue-700 tracking-[-0.03em]">
               Forgot Password?
             </Link>
