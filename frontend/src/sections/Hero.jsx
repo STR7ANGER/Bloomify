@@ -1,9 +1,11 @@
 import React from 'react'
 import pageBg from "../assets/backgrounds/page-bg.png";
+import { Element } from 'react-scroll';
 
 const Hero = () => {
   return (
     <section>
+      <Element title="hero">
         <div className="h-screen flex items-center justify-center bg-[url('./assets/backgrounds/page-bg.png')] bg-cover bg-center">
         <div className='flex flex-col items-center'>
 
@@ -11,6 +13,7 @@ const Hero = () => {
         {/* <p class="mt-4 text-lg">Your amazing tagline goes here.</p> */}
         </div>
         </div>
+        </Element>
     </section>
   )
 }

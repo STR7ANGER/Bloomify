@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import Hero from "../sections/Hero";
 import AboutBloomify from "../sections/AboutBloomify";
 import TopProducts from "../sections/TopProducts";
+import { Element } from 'react-scroll';
 
 const Home = () => {
   return (
