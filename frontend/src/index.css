@@ -12,11 +12,17 @@
     body {
         background: white;
         color: black;
-        font-family: "Roboto Mono", sans-serif;
+        font-family: "Poppins", sans-serif;
     }
 }
 
 @layer components {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  .scroll-hide::-webkit-scrollbar {
+    display: none;
+  }
   .scroll-hide {
     overflow: hidden;
     -ms-overflow-style: none; /* IE and Edge */
