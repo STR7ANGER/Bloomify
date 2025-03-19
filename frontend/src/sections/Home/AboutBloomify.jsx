@@ -12,17 +12,17 @@ const AboutBloomify = () => {
         </div>
         <div className="flex justify-center items-center px-10">
           <div className="my-[5rem]">
-            <h2 className="text-5xl text-black font-medium leading-[1.3em]">
+            <h2 className="text-5xl text-black font-semibold leading-[1.3em]">
               Where Flowers <br /> Find Their <br /> Home
             </h2>
             <hr className="border-gray-600" />
-            <p className="text-xl mt-4 text-gray-600">
+            <p className="text-xl mt-4 font-medium text-gray-600">
               At Bloomify, we connect passionate florists with flower lovers.
               Whether you're looking to brighten someone's day or grow your
               floral business, our platform makes buying and selling flowers
               effortless and delightful.
             </p>
-            <h3 className="text-4xl font-medium text-[#118B50] mt-8 leading-[1.8em]">
+            <h3 className="text-4xl font-semibold text-[#118B50] mt-8 leading-[1.8em]">
               About Bloomify
             </h3>
             <hr className="border-gray-600" />
