@@ -1,6 +1,6 @@
 import React from "react";
-import leftSide from "../assets/backgrounds/left-side.png";
-import Button from "../components/Button";
+import leftSide from "../../assets/backgrounds/left-side.png";
+import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 
 const AboutBloomify = () => {
@@ -22,7 +22,7 @@ const AboutBloomify = () => {
               floral business, our platform makes buying and selling flowers
               effortless and delightful.
             </p>
-            <h3 className="text-4xl font-medium text-[#F0394D] mt-8 leading-[1.8em]">
+            <h3 className="text-4xl font-medium text-[#118B50] mt-8 leading-[1.8em]">
               About Bloomify
             </h3>
             <hr className="border-gray-600" />
