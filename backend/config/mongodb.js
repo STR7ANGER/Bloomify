@@ -5,7 +5,7 @@ const connectDB = async () => {
     console.log("connected to database");
   });
 
-  await mongoose.connect(`${process.env.MONGODB_URI}/fabvog`);
+  await mongoose.connect(`${process.env.MONGODB_URI}/bloomify`);
 };
 
 export default connectDB;
