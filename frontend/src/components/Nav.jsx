@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { LinkScroll } from "react-scroll";
 import { Menu, X } from "lucide-react";
+import Button_2 from "./Button_2";
 
 const Nav = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -46,13 +47,13 @@ const Nav = () => {
             </Link>
             <div className="absolute flex space-x-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-xl:hidden">
               <Link to="/products" className="text-xl">
-                Products
+                <Button_2>Products</Button_2>
               </Link>
               <Link to="/about" className="text-xl">
-                About
+              <Button_2>About</Button_2>
               </Link>
               <Link to="/contact" className="text-xl">
-                Contact
+              <Button_2>Contact</Button_2>
               </Link>
             </div>
             <div className="absolute right-8">

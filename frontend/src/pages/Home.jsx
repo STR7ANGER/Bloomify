@@ -8,11 +8,11 @@ import { Element } from 'react-scroll';
 
 const Home = () => {
   return (
-    <>
+    <div className="pt-[6rem]">
       <Hero />
       <AboutBloomify />
       <TopProducts />
-    </>
+    </div>
   );
 };
 

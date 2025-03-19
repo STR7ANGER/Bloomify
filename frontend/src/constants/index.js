@@ -65,3 +65,27 @@ export const contentData = [
     image: art,
   },
 ];
+
+export const aboutUs = [
+  {
+    id: "1",
+    pfp: "",
+    who: "Aditya Maurya",
+    linkedin: "linkedin.com",
+    work: "blah",
+  },
+  {
+    id: "2",
+    pfp: "",
+    who: "Arkadip Das",
+    linkedin: "linkedin.com",
+    work: "bleach",
+  },
+  {
+    id: "3",
+    pfp: "",
+    who: "Akashdeep Kaur",
+    linkedin: "linkedin.com",
+    work: "bleh",
+  },
+];

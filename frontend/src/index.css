@@ -46,7 +46,13 @@ style={{ WebkitTextStroke: "1px black" }}
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    position: relative;
+  }
+
+  .bg-hero {
+    background-image: url('./assets/backgrounds/hero-1.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
   }
 
   /* .bg-products::before {
