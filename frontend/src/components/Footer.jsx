@@ -6,7 +6,7 @@ import { socials } from "../constants";
 const Footer = () => {
   return (
     <footer>
-      <div className="bg-[#181C3F] text-white">
+      <div className="bg-[#173f1f] text-white">
         <div className="grid grid-cols-4">
           <div className="flex items-center justify-center">
             <img src={bloomifyWhite} alt="logo" />

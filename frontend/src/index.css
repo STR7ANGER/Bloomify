@@ -9,8 +9,10 @@
 #dad5db - grey
 #F0394D
 #181C3F
-#118B50 - green
-#1E5128 - dark green
+#118B50 - green - used in buttons
+#1E5128 - dark green - used in buttons
+#173f1f - darker green - use in footer
+style={{ WebkitTextStroke: "1px black" }}
 */
 
 @layer base {
@@ -39,4 +41,22 @@
   /* .nav-li {
     @apply flex items-center justify-center w-full px-10 space-x-10;
   } */
+  .bg-products {
+    background-image: url('./assets/backgrounds/about-2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  /* .bg-products::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+} */
 }
