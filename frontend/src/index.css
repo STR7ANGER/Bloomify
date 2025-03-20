@@ -54,6 +54,14 @@ style={{ WebkitTextStroke: "1px black" }}
     background-position: center;
     background-attachment: fixed;
   }
+  .bg-box {
+    background-image: url('./assets/backgrounds/green-box.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+
 
   /* .bg-products::before {
     content: "";

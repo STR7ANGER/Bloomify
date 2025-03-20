@@ -19,7 +19,7 @@ const About = () => {
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="text-2xl font-bold text-gray-900">{who}</h3>
                 </div>
-                <p className="text-blue-600 font-semibold mb-4">{work}</p>
+                <p className="text-[#118B50] font-semibold mb-4">{work}</p>
               </div>
             </div>
           ))}
