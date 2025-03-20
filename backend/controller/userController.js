@@ -1,19 +1,13 @@
-
 //To Register User
-const userRegister =async(req,res)=>{
-    try {
-        
-    } catch (error) {
-        
-    }
-}
-
+const userRegister = async (req, res) => {
+  try {
+  } catch (error) {}
+};
 
 //To Login User
-const userLogin =async(req,res)=>{
-    try {
-        
-    } catch (error) {
-        
-    }
-}
+const userLogin = async (req, res) => {
+  try {
+  } catch (error) {}
+};
+
+export { userLogin, userRegister };

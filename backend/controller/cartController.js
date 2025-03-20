@@ -21,3 +21,5 @@ const allCart = async (req, res) => {
   try {
   } catch (error) {}
 };
+
+export { addToCart, removeFromCart, updateCart, allCart };

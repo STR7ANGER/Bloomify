@@ -17,7 +17,9 @@ const allOrder = async (req, res) => {
 };
 
 //Status of order for User/Seller
-const orderStaus = async (req, res) => {
+const orderStatus = async (req, res) => {
   try {
   } catch (error) {}
 };
+
+export { placeOrder, userOrder, allOrder, orderStatus };
