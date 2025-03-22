@@ -3,6 +3,7 @@ import flowerModel from "../models/flowerModel.js";
 import artModel from "../models/artModel.js";
 import toolModel from "../models/toolModel.js";
 import mongoose from "mongoose";
+import { v2 as cloudinary } from "cloudinary";
 
 // Helper function to determine which model to use based on product type
 const getModelByType = (type) => {
@@ -12,7 +13,7 @@ const getModelByType = (type) => {
   return null;
 };
 
-//Add items in seller inventory
+// Add items in seller inventory
 const addItem = async (req, res) => {
   try {
     const { 
@@ -21,16 +22,26 @@ const addItem = async (req, res) => {
       name, 
       description, 
       price, 
-      image, 
       category, 
       season, 
       inout 
     } = req.body;
 
-    if (!sellerId || !type || !name || !description || !price || !image) {
+    // Process images from request files
+    const image1 = req.files.image1 && req.files?.image1?.[0];
+    const image2 = req.files.image2 && req.files?.image2?.[0];
+    const image3 = req.files.image3 && req.files?.image3?.[0];
+    const image4 = req.files.image4 && req.files?.image4?.[0];
+    const image5 = req.files.image5 && req.files?.image5?.[0];
+    
+    const images = [image1, image2, image3, image4, image5].filter(
+      (item) => item !== undefined
+    );
+
+    if (!sellerId || !type || !name || !description || !price || images.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "All required fields must be provided"
+        message: "All required fields must be provided including at least one image"
       });
     }
 
@@ -59,13 +70,15 @@ const addItem = async (req, res) => {
       });
     }
 
-    // Validate image array
-    if (!Array.isArray(image) || image.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "At least one image is required"
-      });
-    }
+    // Upload images to Cloudinary
+    let imagesURL = await Promise.all(
+      images.map(async (item) => {
+        let result = await cloudinary.uploader.upload(item.path, {
+          resource_type: "image",
+        });
+        return result.secure_url;
+      })
+    );
 
     let productModel;
     let productData = {
@@ -73,8 +86,9 @@ const addItem = async (req, res) => {
       type,
       name,
       description,
-      price,
-      image
+      price: Number(price),
+      image: imagesURL,
+      date: Date.now()
     };
 
     // Add specific fields based on product type
@@ -148,7 +162,7 @@ const addItem = async (req, res) => {
   }
 };
 
-//Update items in seller inventory
+// Update items in seller inventory
 const updateItem = async (req, res) => {
   try {
     const { productId, type } = req.params;
@@ -212,6 +226,33 @@ const updateItem = async (req, res) => {
       });
     }
 
+    // Handle image updates if files are provided
+    if (req.files && Object.keys(req.files).length > 0) {
+      const image1 = req.files.image1 && req.files?.image1?.[0];
+      const image2 = req.files.image2 && req.files?.image2?.[0];
+      const image3 = req.files.image3 && req.files?.image3?.[0];
+      const image4 = req.files.image4 && req.files?.image4?.[0];
+      const image5 = req.files.image5 && req.files?.image5?.[0];
+      
+      const images = [image1, image2, image3, image4, image5].filter(
+        (item) => item !== undefined
+      );
+
+      if (images.length > 0) {
+        // Upload new images to Cloudinary
+        const imagesURL = await Promise.all(
+          images.map(async (item) => {
+            let result = await cloudinary.uploader.upload(item.path, {
+              resource_type: "image",
+            });
+            return result.secure_url;
+          })
+        );
+        
+        updates.image = imagesURL;
+      }
+    }
+
     if (type === "flower" || type === "plant") {
       if (updates.season) {
         const validSeasons = ["summer", "winter", "autumn", "spring"];
@@ -242,6 +283,11 @@ const updateItem = async (req, res) => {
     delete updates.type;
     delete updates._id;
 
+    // Convert price to Number if present
+    if (updates.price) {
+      updates.price = Number(updates.price);
+    }
+
     // Update product
     const updatedProduct = await productModel.findByIdAndUpdate(
       productId,
@@ -264,7 +310,7 @@ const updateItem = async (req, res) => {
   }
 };
 
-//Remove items for seller inventory
+// Remove items from seller inventory
 const removeItem = async (req, res) => {
   try {
     const { productId, type } = req.params;
@@ -310,6 +356,13 @@ const removeItem = async (req, res) => {
       });
     }
 
+    // Find the product to get image URLs before deletion
+    const product = await productModel.findById(productId);
+    if (product && product.image && product.image.length > 0) {
+      // Here you could add code to delete images from Cloudinary if needed
+      // This would involve extracting public_ids from URLs and calling cloudinary.uploader.destroy
+    }
+
     // Remove product from database
     await productModel.findByIdAndDelete(productId);
 
@@ -333,7 +386,7 @@ const removeItem = async (req, res) => {
   }
 };
 
-//Get all items in seller inventory
+// Get all items in seller inventory
 const allItem = async (req, res) => {
   try {
     const sellerId = req.params.sellerId || req.query.sellerId;
@@ -423,4 +476,55 @@ const allItem = async (req, res) => {
   }
 };
 
-export { addItem, updateItem, removeItem, allItem };
+// Get single item details
+const singleItem = async (req, res) => {
+  try {
+    const { productId, type } = req.params;
+
+    if (!productId || !type) {
+      return res.status(400).json({
+        success: false,
+        message: "Product ID and type are required"
+      });
+    }
+
+    // Validate product ID
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID"
+      });
+    }
+
+    const productModel = getModelByType(type);
+    if (!productModel) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product type"
+      });
+    }
+
+    // Find product
+    const product = await productModel.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      product
+    });
+  } catch (error) {
+    console.error("Fetch single item error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching item details",
+      error: error.message
+    });
+  }
+};
+
+export { addItem, updateItem, removeItem, allItem, singleItem };

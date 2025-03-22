@@ -6,10 +6,10 @@ const flowerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
-  image: { type: Array, required: true },
+  image: { type: [String], required: true }, // Array of URL strings
   season: { type: String, required: true },
   inout: { type: String, required: true },
-});
+}, { timestamps: true });
 
 const flowerModel =
   mongoose.models.flower || mongoose.model("flower", flowerSchema);
