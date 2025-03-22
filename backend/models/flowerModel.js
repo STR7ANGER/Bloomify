@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const flowerSchema = new mongoose.Schema({
-  sid:{type: String,required:true},
-  type:{type: String, default: "flower"},
+  sid: { type: String, required: true },
+  type: { type: String, required: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
