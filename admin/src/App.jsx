@@ -1,11 +1,29 @@
-import React from 'react'
+import React, { useState } from "react";
+import Login from "./pages/Login";
+import Navbar from "./components/Navbar";
+import Dashboard from "./pages/Dashboard";
+import Footer from "./components/Footer";
 
 const App = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-export default App
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
+
+  return (
+    <div className="app-container">
+      {!isLoggedIn ? (
+        <Login onLoginSuccess={handleLoginSuccess} />
+      ) : (
+        <>
+          <Navbar />
+          <Dashboard />
+          <Footer />
+        </>
+      )}
+    </div>
+  );
+};
+
+export default App;
