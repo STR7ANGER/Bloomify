@@ -13,16 +13,17 @@ const Layout = () => {
       <Navbar />
       
       {/* Content area with sidebar */}
-      <div className="flex flex-grow px-4 py-6">
-        {/* Sidebar with fixed height */}
-        <div className="hidden lg:block h-[calc(100vh-64px)]"> {/* Adjust 64px to match your navbar height */}
+      <div className="flex flex-grow container mx-auto px-4 py-6 max-w-full">
+        {/* Sidebar with fixed height and responsive display */}
+        <div className="hidden lg:block w-64 flex-shrink-0 overflow-y-auto h-[calc(100vh-64px)] sticky top-16"> 
+          {/* Adjust top value to match navbar height */}
           <Sidebar activePath={location.pathname} />
         </div>
         
         {/* Main content in rounded border box */}
-        <div className="flex-grow ml-4">
+        <div className="flex-grow lg:ml-6 w-full overflow-hidden">
           <div className="border border-gray-300 rounded-lg shadow-md h-full overflow-auto">
-            <main className="p-6">
+            <main className="p-4 md:p-6">
               <Outlet />
             </main>
           </div>

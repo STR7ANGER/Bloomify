@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.8.4",
     "clsx": "^2.1.1",
     "lucide": "^0.483.0",
     "lucide-react": "^0.483.0",
@@ -17,7 +18,8 @@
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.4.0",
-    "react-scroll": "^1.9.3"
+    "react-scroll": "^1.9.3",
+    "toastify": "^2.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
