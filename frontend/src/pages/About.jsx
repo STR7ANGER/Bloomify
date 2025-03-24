@@ -1,67 +1,135 @@
 import React from "react";
+import { useState } from "react";
 import { aboutUs } from "../constants";
+import { Element } from "react-scroll";
+import { motion } from "framer-motion";
+import heroBg from "../assets/backgrounds/about-bg.png";
 
 const About = () => {
+  const [activeSection, setActiveSection] = useState("story");
   return (
-    <section className="pt-[6rem] bg-[url('././assets/backgrounds/hero-1.png')] bg-cover bg-center">
-      {/* Gradient Overlay */}
-      {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-white" /> */}
-
-      {/* Content Container */}
-
-      <div className="container mx-auto relative z-10 px-6">
-        {/* About Bloomify Section */}
-
-        {/* Our Team Section */}
-        <h1 class="text-6xl tracking-[0.3em] text-white mt-40 text-center max-sm:mt-20 max-sm:px-10">
-          Our Team
+    <>
+      <section className="min-h-screen mt-[3.5rem] flex justify-center bg-[url('././assets/backgrounds/hero-1.png')] bg-cover bg-center">
+        <h1 class="text-6xl tracking-[0.3em] pt-20 text-white mt-32 text-center max-sm:mt-8 max-sm:px-10">
+          Where Every Petal Tells a Story
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32">
-          {aboutUs.map(({ id, pfp, who, work }) => (
-            <div
-              key={id}
-              className="bg-white border border-gray-500 rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl"
-            >
-              <img src={pfp} alt={who} className="w-full h-64 object-contain" />
-              <div className="p-6 text-center">
-                <h3 className="text-2xl font-bold text-gray-900">{who}</h3>
-                <p className="text-[#118B50] font-semibold">{work}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="text-center text-white">
-          <h3 className="text-4xl font-semibold text-[#85EBA0] mt-8 leading-[1.8em]">
-            About Bloomify
-          </h3>
-          <h3 className="text-lg text-gray-300 mt-4">
-            Cultivating Beauty, Creativity, and Growth
-          </h3>
-        </div>
+      </section>
+      <section>
+        <div className="mx-auto">
+          {/* Heading */}
 
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6 text-center text-white">
-          <div>
-            <h4 className="text-2xl font-bold">500+ Unique</h4>
-            <p className="text-base text-gray-300">Flower varieties</p>
+          {/* Toggle Buttons */}
+          <div className="relative flex flex-wrap justify-center gap-x-4 md:gap-x-40 lg:gap-x-64 mb-6 py-2">
+            <button
+              className="text-xl px-4 py-2 text-gray-700 relative"
+              onClick={() => setActiveSection("story")}
+            >
+              Our Story
+              {activeSection === "story" && (
+                <motion.div
+                  layoutId="underline"
+                  className="absolute left-0 right-0 h-[2px] bg-gray-700 bottom-[-5px]"
+                />
+              )}
+            </button>
+            <button
+              className="text-xl px-4 py-2 text-gray-700 relative"
+              onClick={() => setActiveSection("team")}
+            >
+              Our Team
+              {activeSection === "team" && (
+                <motion.div
+                  layoutId="underline"
+                  className="absolute left-0 right-0 h-[2px] bg-gray-700 bottom-[-5px]"
+                />
+              )}
+            </button>
           </div>
-          <div>
-            <h4 className="text-2xl font-bold">5+ Years</h4>
-            <p className="text-base text-gray-300">Of Excellence</p>
-          </div>
-          <div>
-            <h4 className="text-2xl font-bold">Seamless</h4>
-            <p className="text-base text-gray-300">
-              Buying & Selling Experience
-            </p>
-          </div>
-          <div>
-            <h4 className="text-2xl font-bold">Connecting</h4>
-            <p className="text-base text-gray-300">Flower Lovers Worldwide</p>
+
+          {/* Sections */}
+          <div className="p-6 rounded-lg shadow-lg">
+            {activeSection === "story" && (
+              <div id="our-story" className="text-center my-20">
+                <h3 className="text-4xl font-semibold text-[#1E5128] my-10 leading-[1.8em] tracking-wider">
+                  About Bloomify
+                </h3>
+                  
+                <div className="object-contain h-auto w-[48rem] mx-auto">
+                  <img src={heroBg} alt="about" />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-14 text-center">
+                  {/* Full-width heading */}
+
+                  <p className="col-span-1 sm:col-span-2 text-lg text-gray-500 max-w-4xl mx-auto">
+                    At Bloomify, we connect passionate florists with flower
+                    lovers. Whether you're looking to brighten someone's day or
+                    grow your floral business, our platform makes buying and
+                    selling flowers effortless and delightful.
+                  </p>
+
+                  {/* Stats Section (Centered on all devices) */}
+                  <div>
+                    <h4 className="text-2xl font-bold">500+ Unique</h4>
+                    <p className="text-base text-gray-500">Flower varieties</p>
+                  </div>
+                  <div>
+                    <h4 className="text-2xl font-bold">5+ Years</h4>
+                    <p className="text-base text-gray-500">Of Excellence</p>
+                  </div>
+                  <div>
+                    <h4 className="text-2xl font-bold">Seamless</h4>
+                    <p className="text-base text-gray-500">
+                      Buying & Selling Experience
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-2xl font-bold">Connecting</h4>
+                    <p className="text-base text-gray-500">
+                      Flower Lovers Worldwide
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeSection === "team" && (
+              <div id="our-team" className="mt-10 mb-20">
+                <div className="container mx-auto">
+                <h3 className="text-xl text-center text-gray-500 mb-20">
+                    Cultivating Beauty, Creativity, and Growth
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    {aboutUs.map(({ id, pfp, who, work }) => (
+                      <div
+                        key={id}
+                        className="bg-white border border-gray-500 rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105"
+                      >
+                        <img
+                          src={pfp}
+                          alt={who}
+                          className="w-full h-64 object-contain"
+                        />
+                        <div className="p-6">
+                          <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-2xl font-bold text-gray-900">
+                              {who}
+                            </h3>
+                          </div>
+                          <p className="text-[#118B50] font-semibold mb-4">
+                            {work}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

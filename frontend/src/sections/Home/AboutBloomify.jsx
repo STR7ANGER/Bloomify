@@ -23,10 +23,10 @@ const AboutBloomify = () => {
       ref={ref}
       className="relative min-h-screen flex justify-center my-40 items-center px-10 bg-[url('././assets/backgrounds/green-box.png')] bg-cover bg-center"
     >
-      <div className="absolute top-0 w-3/4 h-[4px] bg-[#173f1f]"></div>
-      <div className="absolute top-20 left-0 ml-40 h-1/2 w-[4px] bg-[#173f1f] max-2xl:hidden"></div>
-      <div className="absolute bottom-20 right-0 mr-40 h-1/2 w-[4px] bg-[#173f1f] max-2xl:hidden"></div>
-      <div className="absolute bottom-0 w-3/4 h-[4px] bg-[#173f1f]"></div>
+      <div className="absolute top-0 w-3/4 h-[1px] bg-[#173f1f]"></div>
+      <div className="absolute top-20 left-0 ml-40 h-1/2 w-[1px] bg-[#173f1f] max-2xl:hidden"></div>
+      <div className="absolute bottom-20 right-0 mr-40 h-1/2 w-[1px] bg-[#173f1f] max-2xl:hidden"></div>
+      <div className="absolute bottom-0 w-3/4 h-[1px] bg-[#173f1f]"></div>
 {/* Content Box with Pop-Out Effect */}
       <motion.div
         style={{ scale, y: translateY }} // Adds the pop-out effect
@@ -42,36 +42,6 @@ const AboutBloomify = () => {
           floral business, our platform makes buying and selling flowers
           effortless and delightful.
         </p>
-
-        {/* <h3 className="text-4xl font-semibold text-[#85EBA0] mt-8 leading-[1.8em]">
-          About Bloomify
-        </h3> */}
-
-        {/* <div className="grid grid-cols-2 gap-6 mt-4">
-          <h3 className="col-span-2 text-lg text-gray-300">
-            Cultivating Beauty, Creativity, and Growth
-          </h3>
-          <div>
-            <h4 className="text-2xl font-bold">500+ Unique</h4>
-            <p className="text-base text-gray-300">Flower varieties</p>
-          </div>
-          <div>
-            <h4 className="text-2xl font-bold">5+ Years</h4>
-            <p className="text-base text-gray-300">Of Excellence</p>
-          </div>
-          <div>
-            <h4 className="text-2xl font-bold">Seamless</h4>
-            <p className="text-base text-gray-300">
-              Buying & Selling Experience
-            </p>
-          </div>
-          <div>
-            <h4 className="text-2xl font-bold">Connecting</h4>
-            <p className="text-base text-gray-300">
-              Flower Lovers Worldwide
-            </p>
-          </div>
-        </div> */}
 
         {/* Button with Pop-Out Scroll Effect */}
           <motion.div

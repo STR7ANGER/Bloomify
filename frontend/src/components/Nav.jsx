@@ -46,6 +46,9 @@ const Nav = () => {
               />
             </Link>
             <div className="absolute flex space-x-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-xl:hidden">
+              <Link to="/" className="text-xl">
+                <Button_2>Home</Button_2>
+              </Link>
               <Link to="/products" className="text-xl">
                 <Button_2>Products</Button_2>
               </Link>
@@ -76,6 +79,9 @@ const Nav = () => {
           </button>
 
           <div className="text-2xl space-y-6 text-center uppercase">
+            <Link to="/" onClick={() => setIsOpen(false)} className="block">
+              Home
+            </Link>
             <Link to="/products" onClick={() => setIsOpen(false)} className="block">
               Products
             </Link>

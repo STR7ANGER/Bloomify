@@ -10,7 +10,7 @@ const TopProducts = () => {
         <hr className="my-10 w-full" />
         <div className="grid grid-cols-1 gap-6 mt-10 sm:grid-cols-2 lg:grid-cols-4">
           {topProducts.map(({ id, image, title, description }) => (
-            <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-500">
+            <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-500">
               <img
                 src={image}
                 alt={title}
