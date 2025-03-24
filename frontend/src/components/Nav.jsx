@@ -85,9 +85,7 @@ const Nav = () => {
             <Link to="/contact" onClick={() => setIsOpen(false)} className="block">
               Contact
             </Link>
-            <Link to="/signup" className="block">
-          <Button>Sign Up</Button>
-        </Link>
+          <Button href="/signup" className="block">Sign Up</Button>
           </div>
         </div>
       )}  

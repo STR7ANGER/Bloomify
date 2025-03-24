@@ -71,21 +71,69 @@ export const aboutUs = [
     id: "1",
     pfp: "",
     who: "Aditya Maurya",
-    linkedin: "linkedin.com",
-    work: "blah",
+    work: "Member",
   },
   {
     id: "2",
     pfp: "",
     who: "Arkadip Das",
-    linkedin: "linkedin.com",
-    work: "bleach",
+    work: "Member",
   },
   {
     id: "3",
     pfp: "",
     who: "Akashdeep Kaur",
-    linkedin: "linkedin.com",
-    work: "bleh",
+    work: "Member",
+  },
+];
+
+export const topProducts = [
+  {
+    id: "1",
+    image: "https://via.placeholder.com/150",
+    title: "Product 1",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: "2",
+    image: "https://via.placeholder.com/150",
+    title: "Product 2",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: "3",
+    image: "https://via.placeholder.com/150",
+    title: "Product 3",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: "4",
+    image: "https://via.placeholder.com/150",
+    title: "Product 4",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: "5",
+    image: "https://via.placeholder.com/150",
+    title: "Product 5",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: "6",
+    image: "https://via.placeholder.com/150",
+    title: "Product 6",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: "7",
+    image: "https://via.placeholder.com/150",
+    title: "Product 7",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: "8",
+    image: "https://via.placeholder.com/150",
+    title: "Product 8",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
 ];

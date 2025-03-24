@@ -23,10 +23,10 @@ const AboutBloomify = () => {
       ref={ref}
       className="relative min-h-screen flex justify-center my-40 items-center px-10 bg-[url('././assets/backgrounds/green-box.png')] bg-cover bg-center"
     >
-      <div className="absolute top-0 w-3/4 h-[8px] bg-[#173f1f]"></div>
-      <div className="absolute top-20 left-0 ml-40 h-1/2 w-[8px] bg-[#173f1f] max-2xl:hidden"></div>
-      <div className="absolute bottom-20 right-0 mr-40 h-1/2 w-[8px] bg-[#173f1f] max-2xl:hidden"></div>
-      <div className="absolute bottom-0 w-3/4 h-[8px] bg-[#173f1f]"></div>
+      <div className="absolute top-0 w-3/4 h-[4px] bg-[#173f1f]"></div>
+      <div className="absolute top-20 left-0 ml-40 h-1/2 w-[4px] bg-[#173f1f] max-2xl:hidden"></div>
+      <div className="absolute bottom-20 right-0 mr-40 h-1/2 w-[4px] bg-[#173f1f] max-2xl:hidden"></div>
+      <div className="absolute bottom-0 w-3/4 h-[4px] bg-[#173f1f]"></div>
 {/* Content Box with Pop-Out Effect */}
       <motion.div
         style={{ scale, y: translateY }} // Adds the pop-out effect
@@ -74,17 +74,15 @@ const AboutBloomify = () => {
         </div> */}
 
         {/* Button with Pop-Out Scroll Effect */}
-        <Link to="/about">
           <motion.div
             style={{ scale, y: translateY }}
             transition={{ type: "spring", stiffness: 120, delay: 0.1 }}
             className="mt-8"
           >
-            <Button>
+            <Button href="/about">
               Learn More
             </Button>
           </motion.div>
-        </Link>
       </motion.div>
     </div>
   );
