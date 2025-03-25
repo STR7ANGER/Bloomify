@@ -9,7 +9,7 @@ import ProductCard from "./ProductCard";
 const ProductsGrid = () => {
   return (
     <section>
-      <div className="border border-gray-400 rounded-lg m-20">
+      <div className="mt-10">
         <div className="container mx-auto px-4 md:px-0">
           {/* <h2 className="text-5xl font-semibold">Top Products</h2> */}
           <div>
@@ -20,7 +20,7 @@ const ProductsGrid = () => {
               <hr className="flex-grow" />
               <div className="flex justify-end">
                 <DropdownButton
-                  title="Select Category"
+                  title="Sort By"
                   options={["Flowers", "Plants", "Gifts"]}
                 />
               </div>

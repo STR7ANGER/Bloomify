@@ -9,7 +9,7 @@ const TabMenu = ({ tabs }) => {
       {tabs.map((tab) => (
         <button
           key={tab.id}
-          className="text-lg px-4 py-2 text-red-400 relative uppercase"
+          className="text-lg px-4 py-2 text-red-400 font-semibold relative uppercase"
           onClick={() => setActiveTab(tab.id)}
         >
           {tab.label}

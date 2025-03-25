@@ -34,7 +34,7 @@ function ProductDetails() {
               {product.price}
             </p>
             <p className="mt-4 text-gray-600">{product.description}</p>
-            <button className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg">
+            <button className="mt-4 text-red-400 border border-red-400 hover:bg-red-400 hover:text-white transition-all px-6 py-2 rounded-lg">
               Add to Cart
             </button>
           </div>
@@ -56,7 +56,7 @@ function ProductDetails() {
         {/* Related Products */}
         <div className="mt-10">
           <h3 className="text-xl font-semibold mb-4">Related Products</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {productsData
               .filter((p) => p.id !== product.id)
               .slice(0, 8)
