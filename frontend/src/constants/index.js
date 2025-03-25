@@ -14,6 +14,11 @@ import img5 from "../assets/products/5.png";
 import img6 from "../assets/products/6.png";
 import img7 from "../assets/products/7.png";
 import img8 from "../assets/products/8.png";
+import { TbGardenCartFilled } from "react-icons/tb";
+import { GiFlowerPot } from "react-icons/gi";
+import { FaSeedling } from "react-icons/fa6";
+import { GiVineFlower } from "react-icons/gi";
+import { GiPorcelainVase } from "react-icons/gi";
 
 export const socials = [
   {
@@ -249,21 +254,26 @@ export const tabs = [
   {
     id: "seasonal",
     label: "Seasonal Flowers",
+    Icon: GiVineFlower,
   },
   {
     id: "indoor",
     label: "Indoor Flowers",
+    Icon: GiFlowerPot,
   },
   {
     id: "tools",
     label: "Tools",
+    Icon: TbGardenCartFilled,
   },
   {
     id: "nutrition",
     label: "Plant Nutrition",
+    Icon: FaSeedling,
   },
   {
     id: "art",
     label: "Art & Pottery",
+    Icon: GiPorcelainVase,
   },
 ];
