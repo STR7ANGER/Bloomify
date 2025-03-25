@@ -22,7 +22,7 @@ const ToolItem = ({ sid }) => {
       const formData = new FormData();
 
       formData.append("sid", sid);
-      formData.append("type", "tools"); // default type as per schema
+      formData.append("type", "tools");
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
@@ -35,11 +35,10 @@ const ToolItem = ({ sid }) => {
         }
       });
 
-      // Replace with your API endpoint
       const response = await axios.post("/api/items/tool/add", formData);
 
       if (response.data.success) {
-        console.success("Tool added successfully!");
+        console.log("Tool added successfully!");
         // Reset form
         setImages(Array(4).fill(false));
         setName("");
@@ -55,20 +54,26 @@ const ToolItem = ({ sid }) => {
     }
   };
 
+  // Shared gradient text style
+  const gradientTextStyle = "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400";
+  
+  // Shared input style
+  const inputStyle = "w-full px-4 py-3 bg-white/70 border border-emerald-900/20 rounded-lg text-gray-800 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all duration-300 shadow-sm";
+
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="mb-8">
-        <p className="text-base font-semibold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400 mb-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <p className={`text-base font-semibold ${gradientTextStyle} mb-4`}>
           Upload Images
         </p>
         <div className="flex gap-4 flex-wrap">
-          {[0, 1, 2].map((index) => (
+          {[0, 1, 2, 3].map((index) => (
             <label
               key={index}
               htmlFor={`toolImage${index}`}
-              className="hover:opacity-75 transition-opacity group"
+              className="cursor-pointer transform hover:scale-105 transition-transform duration-300"
             >
-              <div className="relative">
+              <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600/20 via-teal-600/20 to-green-600/20 rounded-lg blur opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <img
                   className="w-24 h-24 object-cover rounded-lg border-2 border-dashed border-emerald-500/30 relative z-10"
@@ -77,7 +82,7 @@ const ToolItem = ({ sid }) => {
                       ? assets.upload_area
                       : URL.createObjectURL(images[index])
                   }
-                  alt=""
+                  alt="Upload"
                 />
               </div>
               <input
@@ -92,27 +97,27 @@ const ToolItem = ({ sid }) => {
         </div>
       </div>
 
-      <div className="mb-6">
-        <p className="text-base font-semibold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400 mb-2">
+      <div>
+        <p className={`text-base font-semibold ${gradientTextStyle} mb-2`}>
           Tool Name
         </p>
         <input
-          className="w-full px-4 py-3 bg-gray-800/50 border border-emerald-900/30 rounded-lg text-gray-300 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all duration-300"
+          className={inputStyle}
           type="text"
-          placeholder="Tool Name"
+          placeholder="Enter Tool Name"
           onChange={(e) => setName(e.target.value)}
           value={name}
           required
         />
       </div>
 
-      <div className="mb-6">
-        <p className="text-base font-semibold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400 mb-2">
+      <div>
+        <p className={`text-base font-semibold ${gradientTextStyle} mb-2`}>
           Description
         </p>
         <textarea
-          className="w-full px-4 py-3 bg-gray-800/50 border border-emerald-900/30 rounded-lg text-gray-300 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all duration-300"
-          placeholder="Type Here"
+          className={inputStyle}
+          placeholder="Describe the tool"
           rows="4"
           onChange={(e) => setDescription(e.target.value)}
           value={description}
@@ -120,42 +125,43 @@ const ToolItem = ({ sid }) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <p className="text-base font-semibold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400 mb-2">
+          <p className={`text-base font-semibold ${gradientTextStyle} mb-2`}>
             Category
           </p>
           <select
             onChange={(e) => setCategory(e.target.value)}
             value={category}
-            className="w-full px-4 py-3 bg-gray-800/50 border border-emerald-900/30 rounded-lg text-gray-300 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all duration-300"
+            className={inputStyle}
           >
             <option value="Hand Tools">Hand Tools</option>
-            <option value="Power Tools">Nutrition</option>
+            <option value="Power Tools">Power Tools</option>
           </select>
         </div>
-        
 
         <div>
-          <p className="text-base font-semibold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400 mb-2">
+          <p className={`text-base font-semibold ${gradientTextStyle} mb-2`}>
             Price
           </p>
           <input
-            className="w-full px-4 py-3 bg-gray-800/50 border border-emerald-900/30 rounded-lg text-gray-300 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all duration-300"
+            className={inputStyle}
             type="number"
-            placeholder="$xxxx"
+            placeholder="Enter Price"
             onChange={(e) => setPrice(e.target.value)}
             value={price}
             required
+            min="0"
+            step="0.01"
           />
         </div>
       </div>
 
       <button
         type="submit"
-        className="w-full py-3 bg-gradient-to-r from-emerald-800 via-teal-800 to-green-800 text-white rounded-lg font-medium tracking-wide shadow-lg shadow-emerald-900/20 hover:shadow-emerald-900/40 transition-all duration-300 hover:-translate-y-1"
+        className="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 text-white rounded-lg font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ease-in-out"
       >
-        ADD TOOL
+        Add Tool
       </button>
     </form>
   );

@@ -8,6 +8,8 @@ import Orders from "./pages/Orders.jsx";
 import AddItems from "./pages/AddItems.jsx";
 import Advertisement from "./pages/Advertisement.jsx";
 
+export const BackendUrl=import.meta.env.VITE_BACKEND_URL;3
+
 const App = () => {
   return (
     <Routes>

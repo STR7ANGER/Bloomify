@@ -19,6 +19,7 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.4.0",
     "react-scroll": "^1.9.3",
+    "recharts": "^2.15.1",
     "toastify": "^2.0.1"
   },
   "devDependencies": {

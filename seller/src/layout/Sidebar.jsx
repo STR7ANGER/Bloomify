@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ activePath }) => {
-  // Navigation items matching the reference image
   const navItems = [
     { path: "/add-items", label: "Add Items" },
     { path: "/inventory", label: "Inventory" },
@@ -11,19 +10,18 @@ const Sidebar = ({ activePath }) => {
   ];
 
   return (
-    <div className="h-full w-48">
-      <nav className="py-2">
-        <ul className="space-y-4">
+    <div className="h-full w-48 bg-white rounded-xl shadow-md">
+      <nav className="py-4">
+        <ul className="space-y-2">
           {navItems.map((item) => (
-            <li key={item.path}>
+            <li key={item.path} className="px-2">
               <Link
                 to={item.path}
-                className={`block w-full text-center py-3 px-2 rounded-md transition-colors 
-                shadow-md 
+                className={`block w-full text-center py-3 px-2 rounded-lg transition-all duration-300 
                 ${
                   activePath.includes(item.path)
-                    ? "bg-white text-[#1E5128] border border-[#1E5128] drop-shadow-[0_0_5px_#1E5128]"
-                    : "bg-[#1E5128] text-white hover:bg-[#1E5128]/90"
+                    ? "bg-emerald-500 text-white shadow-md"
+                    : "text-gray-700 hover:bg-emerald-50 hover:text-emerald-600"
                 }`}
               >
                 {item.label}
