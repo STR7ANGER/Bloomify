@@ -6,6 +6,14 @@ import indoor from "../assets/about/indoor.png";
 import tools from "../assets/about/tools.jpg";
 import nutrition from "../assets/about/nutrition.png";
 import art from "../assets/about/art.jpg";
+import img1 from "../assets/products/1.jpg";
+import img2 from "../assets/products/2.png";
+import img3 from "../assets/products/3.png";
+import img4 from "../assets/products/4.png";
+import img5 from "../assets/products/5.png";
+import img6 from "../assets/products/6.png";
+import img7 from "../assets/products/7.png";
+import img8 from "../assets/products/8.png";
 
 export const socials = [
   {
@@ -90,49 +98,49 @@ export const aboutUs = [
 export const topProducts = [
   {
     id: "1",
-    image: "https://via.placeholder.com/150",
+    image: img1,
     title: "Product 1",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     id: "2",
-    image: "https://via.placeholder.com/150",
+    image: img2,
     title: "Product 2",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     id: "3",
-    image: "https://via.placeholder.com/150",
+    image: img3,
     title: "Product 3",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     id: "4",
-    image: "https://via.placeholder.com/150",
+    image: img4,
     title: "Product 4",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     id: "5",
-    image: "https://via.placeholder.com/150",
+    image: img5,
     title: "Product 5",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     id: "6",
-    image: "https://via.placeholder.com/150",
+    image: img6,
     title: "Product 6",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     id: "7",
-    image: "https://via.placeholder.com/150",
+    image: img7,
     title: "Product 7",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
     id: "8",
-    image: "https://via.placeholder.com/150",
+    image: img8,
     title: "Product 8",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
