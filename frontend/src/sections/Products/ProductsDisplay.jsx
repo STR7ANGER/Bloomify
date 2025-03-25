@@ -8,14 +8,14 @@ const ProductsDisplay = () => {
       <motion.div
         initial={{ height: 0 }}
         animate={{ height: "50%" }}
-        transition={{ duration: 1, delay: 0.2  }}
+        transition={{ duration: 20, delay: 0.2  }}
         className="absolute top-0 right-[10rem] w-[1px] bg-[#173f1f] max-2xl:hidden"
       ></motion.div>
       
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: "25%" }}
-        transition={{ duration: 1, delay: 0.2 }}
+        transition={{ duration: 20, delay: 0.2 }}
         className="absolute top-0 left-0 ml-40 h-[1px] bg-[#173f1f]"
       ></motion.div>
 
@@ -23,14 +23,14 @@ const ProductsDisplay = () => {
       <motion.div
         initial={{ height: 0 }}
         animate={{ height: "25%" }}
-        transition={{ duration: 1, delay: 0.2 }}
+        transition={{ duration: 20, delay: 0.2 }}
         className="absolute top-0 left-0 ml-40 w-[1px] bg-[#173f1f] max-2xl:hidden"
       ></motion.div>
 
       <motion.div
         initial={{ height: 0 }}
         animate={{ height: "25%" }}
-        transition={{ duration: 1, delay: 0.2 }}
+        transition={{ duration: 20, delay: 0.2 }}
         className="absolute bottom-0 right-0 mr-40 w-[1px] bg-[#173f1f] max-2xl:hidden"
       ></motion.div>
 
@@ -38,14 +38,14 @@ const ProductsDisplay = () => {
       <motion.div
         initial={{ height: 0 }}
         animate={{ height: "50%" }}
-        transition={{ duration: 1, delay: 0.2 }}
+        transition={{ duration: 20, delay: 0.2 }}
         className="absolute bottom-0 left-[10rem] w-[1px] bg-[#173f1f] max-2xl:hidden"
       ></motion.div>
 
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: "25%" }}
-        transition={{ duration: 1, delay: 0.2 }}
+        transition={{ duration: 20, delay: 0.2 }}
         className="absolute bottom-0 right-0 mr-40 h-[1px] bg-[#173f1f]"
       ></motion.div>
 
@@ -61,7 +61,7 @@ const ProductsDisplay = () => {
             <img
               src={item.image}
               alt={item.title}
-              className="w-full md:w-1/2 h-[16.75rem] rounded-lg shadow-lg"
+              className="w-full md:w-1/2 h-[20rem] rounded-lg shadow-lg"
             />
 
             {/* Text Content */}
