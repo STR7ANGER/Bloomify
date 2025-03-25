@@ -6,17 +6,22 @@ import Products from "../pages/Products";
 import Contact from "../pages/Contact";
 import SignUp from "../pages/SignUp";
 import Login from "../pages/Login";
+import ScrollToTop from "../components/ScrollToTop";
+import ProductDetails from "../pages/ProductDetails";
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/products" element={<Products />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/login" element={<Login />} />
-    </Routes>
+    // <ScrollToTop>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    // </ScrollToTop>
   );
 };
 

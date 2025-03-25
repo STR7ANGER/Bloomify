@@ -1,6 +1,7 @@
 import React from "react";
 import { topProducts } from "../../constants";
 import Button from "../../components/Button";
+import { Link } from "react-router-dom";
 
 const TopProducts = () => {
   return (
@@ -19,13 +20,15 @@ const TopProducts = () => {
                 />
               </div>
               <div className="p-4 relative h-28">
-                <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
-                <p className="absolute text-sm text-gray-500 mt-2 group-hover:-translate-y-5 group-hover:opacity-0 transition-all duration-300">
+                <h3 className="text-lg font-semibold text-gray-700 flex justify-start">
+                  {title}
+                </h3>
+                <p className="absolute text-sm text-gray-400 mt-2 group-hover:-translate-y-5 group-hover:opacity-0 transition-all duration-300">
                   {description}
                 </p>
                 <div className="absolute flex items-center text-sm text-gray-400 mt-4 w-full opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-full group-hover:translate-y-0">
                   <p className="mr-2 font-semibold">Show Product</p>
-                  <hr className="border-[1px] border-gray-400 w-12"/>
+                  <hr className="border-[1px] border-gray-400 w-12" />
                 </div>
               </div>
             </div>
@@ -33,9 +36,11 @@ const TopProducts = () => {
         </div>
         <hr className="my-10 w-full" />
         <div className="flex justify-end">
-          <Button className="flex-row-reverse" to="/products">
-            See all products
-          </Button>
+          <Link to="/products">
+            <Button className="flex-row-reverse" to="/products">
+              See all products
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

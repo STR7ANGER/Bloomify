@@ -3,6 +3,7 @@ import AppRoutes from "./routes/AppRoutes";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import { useLocation } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   const location = useLocation();

@@ -4,6 +4,7 @@ import { aboutUs } from "../constants";
 import { Element } from "react-scroll";
 import { motion } from "framer-motion";
 import heroBg from "../assets/backgrounds/about-bg.png";
+import ProductsDisplay from "../sections/Products/ProductsDisplay";
 
 const About = () => {
   const [activeSection, setActiveSection] = useState("story");
@@ -53,12 +54,12 @@ const About = () => {
                 <h3 className="text-4xl font-semibold text-[#1E5128] my-10 leading-[1.8em] tracking-wider">
                   About Bloomify
                 </h3>
-                  
-                <div className="object-contain h-auto w-[48rem] mx-auto">
-                  <img src={heroBg} alt="about" />
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-14 text-center">
+                {/* <div className="object-contain h-auto w-[48rem] mx-auto">
+                  <img src={heroBg} alt="about" />
+                </div> */}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 my-14 text-center">
                   {/* Full-width heading */}
 
                   <p className="col-span-1 sm:col-span-2 text-lg text-gray-500 max-w-4xl mx-auto">
@@ -90,16 +91,26 @@ const About = () => {
                     </p>
                   </div>
                 </div>
+                  <hr className="w-1/2 mx-auto my-20"/>
+                {/* Products Display */}
+
+                <div className="text-center min-h-screen">
+                  <p className="min-w-6xl text-4xl font-bold text-gray-600">
+                    "Where flowers bloom, so does happiness – let nature’s
+                    beauty find a home with you."
+                  </p>
+                  <ProductsDisplay />
+                </div>
               </div>
             )}
+
             {activeSection === "team" && (
               <div id="our-team" className="mt-10 mb-20">
                 <div className="container mx-auto">
-                <h3 className="text-xl text-center text-gray-500 mb-20">
+                  <h3 className="text-xl text-center text-gray-500 mb-20">
                     Cultivating Beauty, Creativity, and Growth
                   </h3>
                   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    
                     {aboutUs.map(({ id, pfp, who, work }) => (
                       <div
                         key={id}
