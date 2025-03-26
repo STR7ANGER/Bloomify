@@ -24,13 +24,14 @@ const ProductCard = () => {
                   <h3 className="text-lg font-semibold text-gray-700 flex justify-start">
                     {title}
                   </h3>
-                  <p className="absolute text-base font-semibold text-red-400 mt-2 group-hover:-translate-y-5 group-hover:opacity-0 transition-all duration-300">
+                  <p className="absolute text-base font-semibold text-red-400 mt-2"> 
+                    {/* group-hover:-translate-y-5 group-hover:opacity-0 transition-all duration-300 */}
                     {price}
                   </p>
-                  <div className="absolute flex items-center text-sm text-gray-400 mt-4 w-full opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-full group-hover:translate-y-0">
+                  {/* <div className="absolute flex items-center text-sm text-gray-400 mt-4 w-full opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-full group-hover:translate-y-0">
                     <p className="mr-2 font-semibold">Show Product</p>
                     <hr className="border-[1px] border-gray-400 w-12" />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ))}

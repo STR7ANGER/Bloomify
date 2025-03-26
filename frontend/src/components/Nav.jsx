@@ -62,6 +62,7 @@ const Nav = () => {
             <div className="absolute right-8">
             <div className="max-xl:hidden">
         <Link to="/signup">
+          <div></div>
           <Button>Sign Up</Button>
         </Link>
       </div>
