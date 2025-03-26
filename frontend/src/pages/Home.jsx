@@ -5,6 +5,7 @@ import Hero from "../sections/Home/Hero";
 import AboutBloomify from "../sections/Home/AboutBloomify";
 import TopProducts from "../sections/Home/TopProducts";
 import { Element } from 'react-scroll';
+import BecomeSeller from "../sections/Home/BecomeSeller";
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
       <Hero />
       <AboutBloomify />
       <TopProducts />
+      <BecomeSeller />
     </div>
   );
 };

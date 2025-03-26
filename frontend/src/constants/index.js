@@ -22,7 +22,9 @@ import { GiPorcelainVase } from "react-icons/gi";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import { BsHeart } from "react-icons/bs";
-// import { FiHeart } from "react-icons/fi";
+import { FiHeart } from "react-icons/fi";
+import { BsCart2 } from "react-icons/bs";
+import { BsPerson } from "react-icons/bs";
 
 
 export const socials = [
@@ -288,15 +290,18 @@ export const navIcons =[
     id: "1",
     Icon: BsHeart,
     label: "Wishlist",
+    path: "/wishlist",
   },
   {
     id: "2",
-    Icon: MdOutlineShoppingCart,
+    Icon: BsCart2,
     label: "Cart",
+    path: "/cart",
   },
   {
     id: "2",
     Icon: VscAccount,
     label: "Account",
+    path: "/signup",
   },
 ]
