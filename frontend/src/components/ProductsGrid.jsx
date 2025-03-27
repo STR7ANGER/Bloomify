@@ -5,11 +5,13 @@ import DropdownButton from "./DropdownButton";
 import TabMenu from "./TabMenu";
 import { tabs } from "../constants";
 import ProductCard from "./ProductCard";
+import FiltersSidebar from "./FiltersSidebar";
 
 const ProductsGrid = () => {
   return (
-    <section>
-      <div className="mt-10">
+    <section className="flex">
+      <FiltersSidebar />
+      <div className="mt-9">
         <div className="container mx-auto px-4 md:px-0">
           {/* <h2 className="text-5xl font-semibold">Top Products</h2> */}
           <div>
