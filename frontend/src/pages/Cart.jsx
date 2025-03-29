@@ -24,14 +24,7 @@ const Cart = () => {
           </button>
         </div>
 
-        {/* Offers */}
-        <div className="mt-4 bg-white p-4 rounded-lg shadow">
-          <h3 className="font-semibold">Available Offers</h3>
-          <p className="text-sm text-gray-600">
-            - 7.5% Instant Discount on Axis Bank Credit Card on a min spend of
-            ₹3,500.
-          </p>
-        </div>
+        
 
         {/* Cart Item */}
         <div className="mt-4 bg-white p-4 rounded-lg shadow">
@@ -43,16 +36,15 @@ const Cart = () => {
           <div className="flex items-center mt-3 border p-3 rounded-lg">
             <img
               src="https://via.placeholder.com/80"
-              alt="Ducati T-shirt"
+              alt="Lavender Set"
               className="w-20 h-20 rounded"
             />
             <div className="ml-4 flex-1">
-              <h4 className="font-bold">Ducati</h4>
+              <h4 className="font-bold">Lavender</h4>
               <p className="text-sm text-gray-600">
-                Men White Pure Cotton Brand Logo Polo Collar T-shirt
+                Bloomify House Pot
               </p>
               <div className="flex items-center text-sm mt-2">
-                <span className="font-semibold mr-2">Size: M</span>
                 <label className="mr-2">Qty:</label>
                 <select
                   value={quantity}
