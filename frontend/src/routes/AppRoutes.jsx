@@ -8,6 +8,7 @@ import SignUp from "../pages/SignUp";
 import Login from "../pages/Login";
 import ScrollToTop from "../components/ScrollToTop";
 import ProductDetails from "../pages/ProductDetails";
+import Cart from "../pages/Cart";
 
 const AppRoutes = () => {
   return (
@@ -20,6 +21,8 @@ const AppRoutes = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/cart" element={<Cart />} />
+        {/* <Route path="/wishlist" element={<Wishlist />} /> */}
       </Routes>
     // </ScrollToTop>
   );
