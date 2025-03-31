@@ -4,6 +4,7 @@ import { productsData } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { useCart } from "../components/CartContext";
+import { useWishlist } from "../components/WishlistContext";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -13,6 +14,9 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  
+  const { addToWishlist } = useWishlist();
+  const [addedToWishlist, setAddedToWishlist] = useState(false);
 
   useEffect(() => {
     const foundProduct = productsData.find((p) => p.id.toString() === id);
@@ -25,6 +29,12 @@ function ProductDetails() {
     addToCart(product);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
+  };
+
+  const handleAddToWishlist = () => {
+    addToWishlist(product);
+    setAddedToWishlist(true);
+    setTimeout(() => setAddedToWishlist(false), 2000);
   };
 
   return (
@@ -53,9 +63,10 @@ function ProductDetails() {
                 className="mt-4 text-red-400 border border-red-400 transition-all px-6 py-2 rounded-lg"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
+                onClick={handleAddToWishlist}
               >
                 <div className="flex items-center space-x-2">
-                  <p>Wishlist</p>
+                <p>{addedToWishlist ? "Added to Wishlist!" : "Wishlist"}</p>
                   {isHovered ? (
                     <BsHeartFill size={20} className="text-red-400 bg-inherit" />
                   ) : (

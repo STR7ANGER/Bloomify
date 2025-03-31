@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import { useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import { CartProvider } from "./components/CartContext";
+import { WishlistProvider } from "./components/WishlistContext";
 
 const App = () => {
   const location = useLocation();
@@ -12,18 +13,17 @@ const App = () => {
   return (
     <main className="scroll-hide">
       <CartProvider>
+        <WishlistProvider>
+          {location.pathname !== "/login" &&
+            location.pathname !== "/signup" && <Nav />}
 
-      {location.pathname !== "/login" && location.pathname !== "/signup" && (
-        <Nav />
-      )}
+          <div className="flex-grow">
+            <AppRoutes />
+          </div>
 
-      <div className="flex-grow">
-        <AppRoutes />
-      </div>
-      
-      {location.pathname !== "/login" && location.pathname !== "/signup" && (
-        <Footer />
-      )}
+          {location.pathname !== "/login" &&
+            location.pathname !== "/signup" && <Footer />}
+        </WishlistProvider>
       </CartProvider>
     </main>
   );
