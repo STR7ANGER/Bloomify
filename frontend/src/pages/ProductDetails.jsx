@@ -57,7 +57,7 @@ function ProductDetails() {
                 className="mt-4 text-white border border-red-400 bg-red-400 hover:bg-red-500 px-6 py-2 rounded-lg"
                 onClick={handleAddToCart}
               >
-                {addedToCart ? "Added!" : "Add to Cart"}
+                {addedToCart ? "Added to Cart" : "Add to Cart"}
               </button>
               <button
                 className="mt-4 text-red-400 border border-red-400 transition-all px-6 py-2 rounded-lg"
@@ -66,7 +66,7 @@ function ProductDetails() {
                 onClick={handleAddToWishlist}
               >
                 <div className="flex items-center space-x-2">
-                <p>{addedToWishlist ? "Added to Wishlist!" : "Wishlist"}</p>
+                <p>{addedToWishlist ? "Added to Wishlist" : "Wishlist"}</p>
                   {isHovered ? (
                     <BsHeartFill size={20} className="text-red-400 bg-inherit" />
                   ) : (

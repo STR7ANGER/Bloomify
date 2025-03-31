@@ -1,10 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { aboutUs } from "../constants";
-import { Element } from "react-scroll";
 import { motion } from "framer-motion";
-import heroBg from "../assets/backgrounds/about-bg.png";
 import ProductsDisplay from "../sections/Products/ProductsDisplay";
+import { TypeAnimation } from "react-type-animation";
+
 
 const About = () => {
   const [activeSection, setActiveSection] = useState("story");
@@ -12,7 +12,12 @@ const About = () => {
     <>
       <section className="min-h-screen mt-[3.5rem] flex justify-center bg-[url('././assets/backgrounds/hero-1.png')] bg-cover bg-center">
         <h1 class="text-6xl tracking-[0.3em] pt-20 text-white mt-32 text-center max-sm:mt-8 max-sm:px-10">
-          Where Every Petal Tells a Story
+        <TypeAnimation
+        sequence={["Where Every Petal Tells a Story", 5000]}
+        wrapper="span"
+        speed={3}
+        repeat={0}
+      />
         </h1>
       </section>
       <section>
