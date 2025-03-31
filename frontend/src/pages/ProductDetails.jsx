@@ -2,15 +2,17 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { productsData } from "../constants";
 import { useNavigate } from "react-router-dom";
-import { BsHeart } from "react-icons/bs";
-import { BsHeartFill } from "react-icons/bs";
+import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { useCart } from "../components/CartContext";
 
 function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
 
   useEffect(() => {
     const foundProduct = productsData.find((p) => p.id.toString() === id);
@@ -19,6 +21,11 @@ function ProductDetails() {
 
   if (!product) return <div>Loading...</div>;
 
+  const handleAddToCart = () => {
+    addToCart(product);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
 
   return (
     <section className="pt-[6.5rem]">
@@ -31,16 +38,16 @@ function ProductDetails() {
             className="w-full h-[400px] object-cover rounded-lg"
           />
           <div>
-            <h2 className="text-3xl font-bold text-gray-800">
-              {product.title}
-            </h2>
-            <p className="text-lg text-red-400 font-semibold">
-              {product.price}
-            </p>
+            <h2 className="text-3xl font-bold text-gray-800">{product.title}</h2>
+            <p className="text-lg text-red-400 font-semibold">{product.price}</p>
             <p className="mt-4 text-gray-600">{product.description}</p>
+
             <div className="flex items-center space-x-4 mt-6">
-              <button className="mt-4 text-white border border-red-400 bg-red-400 hover:bg-red-500 px-6 py-2 rounded-lg">
-                Add to Cart
+              <button
+                className="mt-4 text-white border border-red-400 bg-red-400 hover:bg-red-500 px-6 py-2 rounded-lg"
+                onClick={handleAddToCart}
+              >
+                {addedToCart ? "Added!" : "Add to Cart"}
               </button>
               <button
                 className="mt-4 text-red-400 border border-red-400 transition-all px-6 py-2 rounded-lg"
@@ -50,10 +57,7 @@ function ProductDetails() {
                 <div className="flex items-center space-x-2">
                   <p>Wishlist</p>
                   {isHovered ? (
-                    <BsHeartFill
-                      size={20}
-                      className="text-red-400 bg-inherit"
-                    />
+                    <BsHeartFill size={20} className="text-red-400 bg-inherit" />
                   ) : (
                     <BsHeart size={20} className="text-red-400 bg-inherit" />
                   )}

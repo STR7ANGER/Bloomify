@@ -4,12 +4,15 @@ import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import { useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import { CartProvider } from "./components/CartContext";
 
 const App = () => {
   const location = useLocation();
 
   return (
     <main className="scroll-hide">
+      <CartProvider>
+
       {location.pathname !== "/login" && location.pathname !== "/signup" && (
         <Nav />
       )}
@@ -21,6 +24,7 @@ const App = () => {
       {location.pathname !== "/login" && location.pathname !== "/signup" && (
         <Footer />
       )}
+      </CartProvider>
     </main>
   );
 };

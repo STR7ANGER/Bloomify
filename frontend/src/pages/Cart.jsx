@@ -1,104 +1,112 @@
-import { useState } from "react";
-import { FaTag } from "react-icons/fa";
+import { useCart } from "../components/CartContext";
+import { FaTrashAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const Cart = () => {
-  const [quantity, setQuantity] = useState(1);
+function Cart() {
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const navigate = useNavigate();
 
-  const handleQuantityChange = (event) => {
-    setQuantity(parseInt(event.target.value));
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + (Number(item.price.replace('$', '')) || 0) * item.quantity, 0);
   };
+  
 
   return (
-    <section className="pt-[6.5rem] bg-gray-200">
-      <div className="max-w-5xl mx-auto p-6 bg-gray-50">
-        {/* Address Section */}
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="font-semibold">
-            Deliver to: <span className="font-bold">Arkadip Das, 201310</span>
-          </p>
-          <p className="text-sm text-gray-600">
-            Bennett University, Plot No. 8-11, TechZone 2, Dadri, Greater Noida
-          </p>
-          <button className="mt-2 px-4 py-2 text-sm text-pink-600 border border-pink-600 rounded hover:bg-pink-100">
-            CHANGE ADDRESS
-          </button>
-        </div>
+    <section className="pt-[6.5rem] min-h-screen bg-gray-50">
+      <div className="container mx-auto p-6">
+        <h2 className="text-3xl font-bold text-gray-800 text-center">Shopping Cart</h2>
 
-        
-
-        {/* Cart Item */}
-        <div className="mt-4 bg-white p-4 rounded-lg shadow">
-          <h3 className="font-semibold flex items-center">
-            <input type="checkbox" checked className="mr-2" />
-            1/1 ITEMS SELECTED
-          </h3>
-
-          <div className="flex items-center mt-3 border p-3 rounded-lg">
-            <img
-              src="https://via.placeholder.com/80"
-              alt="Lavender Set"
-              className="w-20 h-20 rounded"
-            />
-            <div className="ml-4 flex-1">
-              <h4 className="font-bold">Lavender</h4>
-              <p className="text-sm text-gray-600">
-                Bloomify House Pot
-              </p>
-              <div className="flex items-center text-sm mt-2">
-                <label className="mr-2">Qty:</label>
-                <select
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  className="border px-2 py-1 rounded"
-                >
-                  {[1, 2, 3, 4, 5].map((num) => (
-                    <option key={num} value={num}>
-                      {num}
-                    </option>
+        {cart.length === 0 ? (
+          <div className="text-center mt-10">
+            <p className="text-lg text-gray-600">Your cart is empty.</p>
+            <button
+              className="mt-4 px-6 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500"
+              onClick={() => navigate("/products")}
+            >
+              Continue Shopping
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Cart Items */}
+                <div className="md:col-span-2">
+                  {cart.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between border-b border-gray-200 pb-4 mb-4"
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-20 h-20 object-cover rounded-md"
+                      />
+                      <div className="flex flex-col flex-1 px-4">
+                        <h3 className="text-lg font-semibold text-gray-700">{item.title}</h3>
+                        <p className="text-red-400 font-semibold">${(Number(item.price.replace('$', '')) * item.quantity).toFixed(2)}</p>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <button
+                          className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
+                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                        >
+                          -
+                        </button>
+                        <span className="text-lg">{item.quantity}</span>
+                        <button
+                          className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        >
+                          +
+                        </button>
+                        <button
+                          className="text-red-500 hover:text-red-600"
+                          onClick={() => removeFromCart(item.id)}
+                        >
+                          <FaTrashAlt size={18} />
+                        </button>
+                      </div>
+                    </div>
                   ))}
-                </select>
-                <span className="ml-2 text-red-600">7 left</span>
+                </div>
+
+                {/* Summary Section */}
+                <div className="bg-gray-100 p-6 rounded-lg">
+                  <h3 className="text-xl font-semibold text-gray-700">Order Summary</h3>
+                  <div className="flex justify-between mt-4">
+                    <p className="text-gray-600">Subtotal:</p>
+                    <p className="text-gray-800 font-semibold">${calculateTotal().toFixed(2)}</p>
+                  </div>
+                  <div className="flex justify-between mt-2">
+                    <p className="text-gray-600">Shipping:</p>
+                    <p className="text-gray-800 font-semibold">$5.00</p>
+                  </div>
+                  <div className="border-t border-gray-300 my-4"></div>
+                  <div className="flex justify-between text-lg font-semibold">
+                    <p>Total:</p>
+                    <p>${(calculateTotal() + 5).toFixed(2)}</p>
+                  </div>
+                  <button
+                    className="mt-4 w-full bg-red-400 text-white px-6 py-2 rounded-lg hover:bg-red-500"
+                    onClick={() => alert("Proceeding to Checkout!")}
+                  >
+                    Checkout
+                  </button>
+                  <button
+                    className="mt-2 w-full text-gray-600 border border-gray-400 px-6 py-2 rounded-lg hover:bg-gray-200"
+                    onClick={clearCart}
+                  >
+                    Clear Cart
+                  </button>
+                </div>
               </div>
-              <p className="mt-2 font-bold text-lg text-pink-600">
-                ₹699 <span className="text-gray-400 line-through">₹2,799</span>{" "}
-                <span className="text-green-600">75% OFF</span>
-              </p>
             </div>
-          </div>
-        </div>
-
-        
-
-        {/* Price Details */}
-        <div className="mt-4 bg-white p-4 rounded-lg shadow">
-          <h3 className="font-semibold">PRICE DETAILS (1 Item)</h3>
-          <div className="mt-2 space-y-1 text-sm text-gray-700">
-            <p className="flex justify-between">
-              <span>Total MRP</span> <span>₹2,799</span>
-            </p>
-            <p className="flex justify-between text-green-600">
-              <span>Discount on MRP</span> <span>-₹2,100</span>
-            </p>
-            <p className="flex justify-between">
-              <span>Platform Fee</span> <span>₹20</span>
-            </p>
-            <p className="flex justify-between text-green-600">
-              <span>Shipping Fee</span> <span>FREE</span>
-            </p>
-            <hr className="my-2" />
-            <p className="flex justify-between font-bold text-lg">
-              <span>Total Amount</span> <span>₹719</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Place Order Button */}
-        <button className="w-full mt-4 bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700">
-          PLACE ORDER
-        </button>
+          </>
+        )}
       </div>
     </section>
   );
-};
+}
 
 export default Cart;
