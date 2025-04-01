@@ -10,6 +10,7 @@ import ScrollToTop from "../components/ScrollToTop";
 import ProductDetails from "../pages/ProductDetails";
 import Cart from "../pages/Cart";
 import Wishlist from "../pages/Wishlist";
+import UserProfile from "../pages/UserProfile";
 
 const AppRoutes = () => {
   return (
@@ -24,6 +25,8 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="*" element={<Home />} /> {/* Fallback route */}
       </Routes>
     // </ScrollToTop>
   );
