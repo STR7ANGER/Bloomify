@@ -5,7 +5,7 @@ const ProductCard = ({ products }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="grid grid-cols-2 gap-4 mt-10 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-2 mt-10 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4">
       {products.length > 0 ? (
         products.map(({ id, image, title, price }) => (
           <div

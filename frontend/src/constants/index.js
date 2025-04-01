@@ -162,13 +162,13 @@ export const seasonalProducts = [
   {
     id: 1,
     title: "Rose Bouquet",
-    image: "rose.jpg",
+    image: img1,
     price: "$20",
   },
   {
     id: 2,
     title: "Lily Bunch",
-    image: "lily.jpg",
+    image: img2,
     price: "$18",
   },
 ];
@@ -177,13 +177,13 @@ export const indoorProducts = [
   {
     id: 3,
     title: "Tulip Vase",
-    image: "tulip.jpg",
+    image: img3,
     price: "$25",
   },
   {
     id: 4,
     title: "Orchid Pot",
-    image: "orchid.jpg",
+    image:  img4,
     price: "$30",
   },
 ];
@@ -192,13 +192,13 @@ export const toolsProducts = [
   {
     id: 5,
     title: "Gardening Kit",
-    image: "tools.jpg",
+    image: img8,
     price: "$30",
   },
   {
     id: 6,
     title: "Pruning Scissors",
-    image: "scissors.jpg",
+    image: img5,
     price: "$12",
   },
 ];
@@ -207,13 +207,13 @@ export const nutritionProducts = [
   {
     id: 7,
     title: "Plant Fertilizer",
-    image: "fertilizer.jpg",
+    image: img6,
     price: "$15",
   },
   {
     id: 8,
     title: "Soil Nutrients",
-    image: "soil.jpg",
+    image: img7,
     price: "$20",
   },
 ];
@@ -222,13 +222,13 @@ export const artProducts = [
   {
     id: 9,
     title: "Ceramic Pot",
-    image: "pot.jpg",
+    image: img1,
     price: "$10",
   },
   {
     id: 10,
     title: "Handmade Vase",
-    image: "vase.jpg",
+    image: img2,
     price: "$35",
   },
 ];
