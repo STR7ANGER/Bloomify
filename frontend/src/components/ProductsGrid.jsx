@@ -27,10 +27,14 @@ const ProductsGrid = () => {
   // Get products based on selected tab
   const selectedProducts = tabProductData[activeTab] || [];
 
+  // Only show sidebar when seasonal tab is active
+  const showSidebar = activeTab === "seasonal";
+
   return (
-    <section className="flex">
-      <FiltersSidebar />
-      <div className="mt-9">
+    <section className={`${showSidebar ? "flex" : ""}`}>
+      {/* Only render FiltersSidebar when on seasonal tab */}
+      {showSidebar && <FiltersSidebar />}
+      <div className={`mt-9 ${!showSidebar ? "mx-auto" : ""}`}>
         <div className="container mx-auto px-4 md:px-0">
           <div>
             <div className="p-6 justify-start">

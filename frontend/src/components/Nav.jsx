@@ -44,7 +44,7 @@ const Nav = () => {
             </Link>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 space-x-16 lg:space-x-12 md:space-x-8 xl:flex hidden">
               <Link to="/" className="text-xl">
-                <Button_2 >Home</Button_2>
+                <Button_2>Home</Button_2>
               </Link>
               <Link to="/products" className="text-xl">
                 <Button_2>Products</Button_2>

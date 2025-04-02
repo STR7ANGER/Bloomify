@@ -14,6 +14,14 @@ import img5 from "../assets/products/5.png";
 import img6 from "../assets/products/6.png";
 import img7 from "../assets/products/7.png";
 import img8 from "../assets/products/8.png";
+import sheers from "../assets/products/tools/sheers.png";
+import mister from "../assets/products/tools/mister.png";
+import wateringCan from "../assets/products/tools/watering-can.png";
+import trowel from "../assets/products/tools/trowel.png";
+import weeding from "../assets/products/tools/weeding.png";
+import fertSpreader from "../assets/products/tools/fert-spreader.png";
+import gloves from "../assets/products/tools/gloves.png";
+import moisterMeter from "../assets/products/tools/moisture-meter.png";
 import { TbGardenCartFilled } from "react-icons/tb";
 import { GiFlowerPot } from "react-icons/gi";
 import { FaSeedling } from "react-icons/fa6";
@@ -171,6 +179,55 @@ export const seasonalProducts = [
     image: img2,
     price: "$18",
   },
+  {
+    id: 17,
+    title: "Tulip Charm",
+    image: img5,
+    price: "$22",
+},
+{
+    id: 18,
+    title: "Sunflower Bliss",
+    image: img7,
+    price: "$19",
+},
+{
+    id: 19,
+    title: "Orchid Elegance",
+    image: img4,
+    price: "$25",
+},
+{
+    id: 20,
+    title: "Daisy Delight",
+    image: img6,
+    price: "$15",
+},
+{
+    id: 21,
+    title: "Peony Passion",
+    image: img8,
+    price: "$30",
+},
+{
+    id: 22,
+    title: "Carnation Love",
+    image: img3,
+    price: "$17",
+},
+{
+    id: 23,
+    title: "Lavender Dreams",
+    image: img5,
+    price: "$21",
+},
+{
+    id: 24,
+    title: "Chrysanthemum Glow",
+    image: img7,
+    price: "$26",
+}
+
 ];
 
 export const indoorProducts = [
@@ -186,32 +243,117 @@ export const indoorProducts = [
     image:  img4,
     price: "$30",
   },
+  {
+    id: 25,
+    title: "Marigold Magic",
+    image: img1,
+    price: "$16",
+},
+{
+    id: 26,
+    title: "Gardenia Grace",
+    image: img6,
+    price: "$28",
+},
+{
+    id: 27,
+    title: "Hydrangea Harmony",
+    image: img3,
+    price: "$24",
+},
+{
+    id: 28,
+    title: "Daffodil Glow",
+    image: img8,
+    price: "$20",
+},
+{
+    id: 29,
+    title: "Magnolia Bliss",
+    image: img5,
+    price: "$27",
+},
+{
+    id: 30,
+    title: "Jasmine Whisper",
+    image: img7,
+    price: "$18",
+},
+{
+    id: 31,
+    title: "Azalea Charm",
+    image: img3,
+    price: "$23",
+},
+{
+    id: 32,
+    title: "Violet Serenity",
+    image: img6,
+    price: "$22",
+}
+
 ];
 
 export const toolsProducts = [
   {
     id: 5,
-    title: "Gardening Kit",
-    image: img8,
+    title: "Sheers",
+    image: sheers,
     price: "$30",
   },
   {
     id: 6,
-    title: "Pruning Scissors",
-    image: img5,
+    title: "Garden Gloves",
+    image: gloves,
+    price: "$12",
+  },
+  {
+    id: 7,
+    title: "Plant Mister",
+    image: mister,
+    price: "$12",
+  },
+  {
+    id: 8,
+    title: "Trowel",
+    image: trowel,
+    price: "$12",
+  },
+  {
+    id: 9,
+    title: "Fertilizer Spreader",
+    image: fertSpreader,
+    price: "$12",
+  },
+  {
+    id: 10,
+    title: "Moisture Meter",
+    image: moisterMeter,
+    price: "$12",
+  },
+  {
+    id: 11,
+    title: "Watering Can",
+    image: wateringCan,
+    price: "$12",
+  },
+  {
+    id: 12,
+    title: "Weeding Tool",
+    image: weeding,
     price: "$12",
   },
 ];
 
 export const nutritionProducts = [
   {
-    id: 7,
+    id: 13,
     title: "Plant Fertilizer",
     image: img6,
     price: "$15",
   },
   {
-    id: 8,
+    id: 14,
     title: "Soil Nutrients",
     image: img7,
     price: "$20",
@@ -220,17 +362,66 @@ export const nutritionProducts = [
 
 export const artProducts = [
   {
-    id: 9,
+    id: 15,
     title: "Ceramic Pot",
     image: img1,
     price: "$10",
   },
   {
-    id: 10,
+    id: 16,
     title: "Handmade Vase",
     image: img2,
     price: "$35",
   },
+  {
+    id: 33,
+    title: "Camellia Radiance",
+    image: img8,
+    price: "$26",
+},
+{
+    id: 34,
+    title: "Hibiscus Glow",
+    image: img5,
+    price: "$19",
+},
+{
+    id: 35,
+    title: "Begonia Bliss",
+    image: img3,
+    price: "$21",
+},
+{
+    id: 36,
+    title: "Bluebell Charm",
+    image: img7,
+    price: "$17",
+},
+{
+    id: 37,
+    title: "Petunia Elegance",
+    image: img4,
+    price: "$23",
+},
+{
+    id: 38,
+    title: "Freesia Fragrance",
+    image: img6,
+    price: "$25",
+},
+{
+    id: 39,
+    title: "Zinnia Zest",
+    image: img8,
+    price: "$20",
+},
+{
+    id: 40,
+    title: "Pansy Delight",
+    image: img3,
+    price: "$22",
+}
+
 ];
 
 
@@ -283,3 +474,4 @@ export const navIcons =[
     path: "/signup",
   },
 ]
+ 
