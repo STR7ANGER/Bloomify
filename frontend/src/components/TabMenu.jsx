@@ -26,7 +26,7 @@ const TabMenu = ({ tabs, activeTab, setActiveTab }) => {
             </div>
           </div>
           {activeTab === id && (
-            <motion.div
+            <div
               layoutId="underline"
               className="absolute left-0 right-0 h-[1px] bg-red-400 bottom-[-5px]"
             />
