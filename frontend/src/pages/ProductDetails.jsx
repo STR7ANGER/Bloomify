@@ -73,7 +73,7 @@ function ProductDetails() {
           <img
             src={product.image}
             alt={product.title}
-            className="w-full h-[400px] object-cover rounded-lg"
+            className="w-full h-[400px] object-contain rounded-lg"
           />
           <div>
             <h2 className="text-3xl font-bold text-gray-800">
