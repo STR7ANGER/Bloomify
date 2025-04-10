@@ -170,7 +170,7 @@ export const seasonalProducts = [
   {
     id: 1,
     title: "Rose Bouquet",
-    image: img1,
+    image: img8,
     price: "$20",
   },
   {
@@ -233,8 +233,8 @@ export const seasonalProducts = [
 export const indoorProducts = [
   {
     id: 3,
-    title: "Tulip Vase",
-    image: img3,
+    title: "Anthurium",
+    image: img1,
     price: "$25",
   },
   {
@@ -246,7 +246,7 @@ export const indoorProducts = [
   {
     id: 25,
     title: "Marigold Magic",
-    image: img1,
+    image: img2,
     price: "$16",
 },
 {
