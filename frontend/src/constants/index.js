@@ -6,7 +6,7 @@ import indoor from "../assets/about/indoor.png";
 import tools from "../assets/about/tools.jpg";
 import nutrition from "../assets/about/nutrition.png";
 import art from "../assets/about/art.jpg";
-import img1 from "../assets/products/1.jpg";
+import img1 from "../assets/products/seasonal/anthurium1.jpg.avif";
 import img2 from "../assets/products/2.png";
 import img3 from "../assets/products/3.png";
 import img4 from "../assets/products/4.png";
