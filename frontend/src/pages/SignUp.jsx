@@ -53,7 +53,7 @@ const SignUp = () => {
           </select>
 
           <div className="col-span-2 flex justify-center">
-            <button className="bg-[#F0394D] text-white p-2 mt-2 w-full rounded-full">
+            <button className="bg-[#1E5128] hover:bg-[#118B50] text-white p-2 mt-2 w-full rounded-full">
               Sign Up
             </button>
           </div>

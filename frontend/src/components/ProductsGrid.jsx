@@ -49,7 +49,7 @@ const ProductsGrid = () => {
               <div className="flex justify-end">
                 <DropdownButton
                   title="Sort By"
-                  options={["Flowers", "Plants", "Gifts"]}
+                  options={["Flowers", "Plants"]}
                 />
               </div>
             </div>
