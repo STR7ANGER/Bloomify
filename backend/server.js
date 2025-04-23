@@ -11,7 +11,7 @@ import userRouter from "./routes/userRoute.js";
 
 // App config
 const app = express();
-const port = process.env.PORT || 5000; // Fixed capitalization of PORT
+const port = process.env.PORT || 5000; 
 connectDB();
 connectCloudinary();
 
@@ -19,7 +19,7 @@ connectCloudinary();
 app.use(express.json());
 app.use(cors());
 
-// api endpoints - Fixed missing slashes in route paths
+// api endpoints 
 app.use("/api/cart", cartRouter);
 app.use("/api/inventory", inventoryRouter);
 app.use("/api/order", orderRouter);

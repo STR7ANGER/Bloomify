@@ -1,13 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { assets } from "./../assets/assets";
 
-const ToolItem = ({ sid }) => {
+// Get the API URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+const ToolItem = () => {
   const [images, setImages] = useState(Array(4).fill(false));
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("Hand Tools");
+  const [category, setCategory] = useState("hand tools"); // Changed to lowercase
+  const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [sellerId, setSellerId] = useState(""); // Changed from sid to sellerId
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    const tokenData = localStorage.getItem("token");
+  
+    if (!userData || !tokenData) {
+      console.error("User data or token not found in local storage");
+      return;
+    }
+  
+    try {
+      const parsedUser = JSON.parse(userData);
+      setSellerId(parsedUser.sellerId || ""); // Updated to match form field name
+      setToken(tokenData);
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+    }
+  }, []); 
 
   const handleImageChange = (index, file) => {
     const newImages = [...images];
@@ -17,40 +43,70 @@ const ToolItem = ({ sid }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setMessage({ type: "", text: "" });
 
     try {
       const formData = new FormData();
 
-      formData.append("sid", sid);
+      // Changed from sid to sellerId to match controller expectation
+      formData.append("sellerId", sellerId);
       formData.append("type", "tools");
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
-      formData.append("category", category);
+      formData.append("category", category.toLowerCase()); // Ensure lowercase for consistent validation
+      formData.append("quantity", quantity);
 
+      // Check if at least one image is selected
+      let hasImage = false;
       // Append only the images that were selected
       images.forEach((image, index) => {
         if (image) {
           formData.append(`image${index + 1}`, image);
+          hasImage = true;
         }
       });
 
-      const response = await axios.post("/api/items/tool/add", formData);
+      if (!hasImage) {
+        setMessage({ type: "error", text: "At least one image is required" });
+        setIsLoading(false);
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      // Use the API_URL variable for the request
+      const response = await axios.post(`${API_URL}/api/inventory/add`, formData, config);
 
       if (response.data.success) {
-        console.log("Tool added successfully!");
+        setMessage({ type: "success", text: "Tool added successfully!" });
         // Reset form
         setImages(Array(4).fill(false));
         setName("");
         setDescription("");
         setPrice("");
-        setCategory("Hand Tools");
+        setCategory("hand tools"); // Reset to lowercase
+        setQuantity(1);
       } else {
-        console.error(response.data.message || "Failed to add tool");
+        setMessage({ 
+          type: "error", 
+          text: response.data.message || "Failed to add tool" 
+        });
       }
     } catch (error) {
       console.error("Error adding tool:", error);
-      console.error(error.response?.data?.message || error.message);
+      setMessage({ 
+        type: "error", 
+        text: error.response?.data?.message || "Error adding tool" 
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -62,6 +118,12 @@ const ToolItem = ({ sid }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {message.text && (
+        <div className={`p-4 rounded-lg ${message.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+          {message.text}
+        </div>
+      )}
+      
       <div>
         <p className={`text-base font-semibold ${gradientTextStyle} mb-4`}>
           Upload Images
@@ -135,8 +197,8 @@ const ToolItem = ({ sid }) => {
             value={category}
             className={inputStyle}
           >
-            <option value="Hand Tools">Hand Tools</option>
-            <option value="Power Tools">Power Tools</option>
+            <option value="hand tools">Hand Tools</option>
+            <option value="power tools">Power Tools</option>
           </select>
         </div>
 
@@ -157,11 +219,27 @@ const ToolItem = ({ sid }) => {
         </div>
       </div>
 
+      <div>
+        <p className={`text-base font-semibold ${gradientTextStyle} mb-2`}>
+          Quantity
+        </p>
+        <input
+          className={inputStyle}
+          type="number"
+          placeholder="Enter Quantity"
+          onChange={(e) => setQuantity(e.target.value)}
+          value={quantity}
+          required
+          min="1"
+        />
+      </div>
+
       <button
         type="submit"
-        className="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 text-white rounded-lg font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ease-in-out"
+        disabled={isLoading}
+        className="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 text-white rounded-lg font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ease-in-out disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
       >
-        Add Tool
+        {isLoading ? "Adding Tool..." : "Add Tool"}
       </button>
     </form>
   );

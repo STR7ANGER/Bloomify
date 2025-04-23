@@ -4,21 +4,37 @@ import {
   updateItem,
   removeItem,
   allItem,
+  singleItem
 } from "../controller/inventoryController.js";
 import authSeller from "../middleware/sellerAuth.js";
+import upload from "../middleware/upload.js";
 
 const inventoryRouter = express.Router();
 
-//add items to inventory
-inventoryRouter.post("/add", authSeller, addItem);
+// Add items to inventory with file upload middleware
+inventoryRouter.post("/add", authSeller, upload.fields([
+  { name: "image1", maxCount: 1 },
+  { name: "image2", maxCount: 1 },
+  { name: "image3", maxCount: 1 },
+  { name: "image4", maxCount: 1 }
+]), addItem);
 
-//updates items in the inventory
-inventoryRouter.post("/update", authSeller, updateItem);
+// Update items in the inventory with file upload middleware
+inventoryRouter.put("/update/:productId/:type", authSeller, upload.fields([
+  { name: "image1", maxCount: 1 },
+  { name: "image2", maxCount: 1 },
+  { name: "image3", maxCount: 1 },
+  { name: "image4", maxCount: 1 },
+  { name: "image5", maxCount: 1 }
+]), updateItem);
 
-//remove items from the inevntory
-inventoryRouter.post("/remove", authSeller, removeItem);
+// Remove items from the inventory
+inventoryRouter.delete("/remove/:productId/:type", authSeller, removeItem);
 
-//get list of all items in the inevntory
-inventoryRouter.post("/all", authSeller, allItem);
+// Get list of all items in the inventory
+inventoryRouter.get("/all/:sellerId", authSeller, allItem);
+
+// Get single item details
+inventoryRouter.get("/item/:productId/:type", singleItem);
 
 export default inventoryRouter;

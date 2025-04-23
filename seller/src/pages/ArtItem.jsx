@@ -1,13 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { assets } from "./../assets/assets";
 
-const ArtItem = ({ sid }) => {
-  const [images, setImages] = useState(Array(5).fill(false));
+// Get the API URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+const ArtItem = () => {
+  const [images, setImages] = useState(Array(4).fill(false));
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("Vase");
+  const [category, setCategory] = useState("vase"); // Changed to lowercase
+  const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [sellerId, setSellerId] = useState(""); // Changed from sid to sellerId
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    const tokenData = localStorage.getItem("token");
+  
+    if (!userData || !tokenData) {
+      console.error("User data or token not found in local storage");
+      return;
+    }
+  
+    try {
+      const parsedUser = JSON.parse(userData);
+      setSellerId(parsedUser.sellerId || ""); // Updated to match form field name
+      setToken(tokenData);
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+    }
+  }, []);
 
   const handleImageChange = (index, file) => {
     const newImages = [...images];
@@ -17,57 +43,105 @@ const ArtItem = ({ sid }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setMessage({ type: "", text: "" });
 
     try {
       const formData = new FormData();
 
-      formData.append("sid", sid);
+      // Changed from sid to sellerId to match controller expectation
+      formData.append("sellerId", sellerId);
       formData.append("type", "art");
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
-      formData.append("category", category);
+      formData.append("category", category.toLowerCase()); // Ensure lowercase for consistent validation
+      formData.append("quantity", quantity);
 
+      // Check if at least one image is selected
+      let hasImage = false;
       // Append only the images that were selected
       images.forEach((image, index) => {
         if (image) {
           formData.append(`image${index + 1}`, image);
+          hasImage = true;
         }
       });
 
-      const response = await axios.post("/api/items/art/add", formData);
+      if (!hasImage) {
+        setMessage({ type: "error", text: "At least one image is required" });
+        setIsLoading(false);
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      // Use the API_URL variable for the request
+      const response = await axios.post(
+        `${API_URL}/api/inventory/add`,
+        formData,
+        config
+      );
 
       if (response.data.success) {
-        console.log("Art item added successfully!");
+        setMessage({ type: "success", text: "Art item added successfully!" });
         // Reset form
-        setImages(Array(5).fill(false));
+        setImages(Array(4).fill(false));
         setName("");
         setDescription("");
         setPrice("");
-        setCategory("Vase");
+        setCategory("vase"); // Reset to lowercase
+        setQuantity(1);
       } else {
-        console.error(response.data.message || "Failed to add art item");
+        setMessage({
+          type: "error",
+          text: response.data.message || "Failed to add art item",
+        });
       }
     } catch (error) {
       console.error("Error adding art item:", error);
-      console.error(error.response?.data?.message || error.message);
+      setMessage({
+        type: "error",
+        text: error.response?.data?.message || "Error adding art item",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // Shared gradient text style
-  const gradientTextStyle = "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400";
-  
+  const gradientTextStyle =
+    "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400";
+
   // Shared input style
-  const inputStyle = "w-full px-4 py-3 bg-white/70 border border-emerald-900/20 rounded-lg text-gray-800 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all duration-300 shadow-sm";
+  const inputStyle =
+    "w-full px-4 py-3 bg-white/70 border border-emerald-900/20 rounded-lg text-gray-800 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all duration-300 shadow-sm";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {message.text && (
+        <div
+          className={`p-4 rounded-lg ${
+            message.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
+
       <div>
         <p className={`text-base font-semibold ${gradientTextStyle} mb-4`}>
           Upload Images
         </p>
         <div className="flex gap-4 flex-wrap">
-          {[0, 1, 2, 3, 4].map((index) => (
+          {[0, 1, 2, 3].map((index) => (
             <label
               key={index}
               htmlFor={`artImage${index}`}
@@ -135,10 +209,10 @@ const ArtItem = ({ sid }) => {
             value={category}
             className={inputStyle}
           >
-            <option value="Vase">Vase</option>
-            <option value="Pot">Pot</option>
-            <option value="Bouquet">Bouquet</option>
-            <option value="Crafts">Crafts</option>
+            <option value="vase">Vase</option>
+            <option value="pot">Pot</option>
+            <option value="bouquet">Bouquet</option>
+            <option value="crafts">Crafts</option>
           </select>
         </div>
 
@@ -159,11 +233,27 @@ const ArtItem = ({ sid }) => {
         </div>
       </div>
 
+      <div>
+        <p className={`text-base font-semibold ${gradientTextStyle} mb-2`}>
+          Quantity
+        </p>
+        <input
+          className={inputStyle}
+          type="number"
+          placeholder="Enter Quantity"
+          onChange={(e) => setQuantity(e.target.value)}
+          value={quantity}
+          required
+          min="1"
+        />
+      </div>
+
       <button
         type="submit"
-        className="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 text-white rounded-lg font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ease-in-out"
+        disabled={isLoading}
+        className="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 text-white rounded-lg font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ease-in-out disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
       >
-        Add Art Item
+        {isLoading ? "Adding Art Item..." : "Add Art Item"}
       </button>
     </form>
   );

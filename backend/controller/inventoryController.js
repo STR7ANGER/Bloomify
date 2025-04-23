@@ -16,32 +16,42 @@ const getModelByType = (type) => {
 // Add items in seller inventory
 const addItem = async (req, res) => {
   try {
-    const { 
-      sellerId, 
-      type, 
-      name, 
-      description, 
-      price, 
-      category, 
-      season, 
-      inout 
+    const {
+      sellerId,
+      type,
+      name,
+      description,
+      price,
+      category,
+      season,
+      inout,
+      quantity,
     } = req.body;
 
+    // Process images from request files
     // Process images from request files
     const image1 = req.files.image1 && req.files?.image1?.[0];
     const image2 = req.files.image2 && req.files?.image2?.[0];
     const image3 = req.files.image3 && req.files?.image3?.[0];
     const image4 = req.files.image4 && req.files?.image4?.[0];
-    const image5 = req.files.image5 && req.files?.image5?.[0];
-    
-    const images = [image1, image2, image3, image4, image5].filter(
+
+    const images = [image1, image2, image3, image4].filter(
       (item) => item !== undefined
     );
 
-    if (!sellerId || !type || !name || !description || !price || images.length === 0) {
+    if (
+      !sellerId ||
+      !type ||
+      !name ||
+      !description ||
+      !price ||
+      !quantity ||
+      images.length === 0
+    ) {
       return res.status(400).json({
         success: false,
-        message: "All required fields must be provided including at least one image"
+        message:
+          "All required fields must be provided including at least one image",
       });
     }
 
@@ -49,7 +59,7 @@ const addItem = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(sellerId)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid seller ID"
+        message: "Invalid seller ID",
       });
     }
 
@@ -58,15 +68,22 @@ const addItem = async (req, res) => {
     if (!seller) {
       return res.status(404).json({
         success: false,
-        message: "Seller not found"
+        message: "Seller not found",
       });
     }
 
-    // Validate price
+    // Validate price and quantity
     if (isNaN(price) || price <= 0) {
       return res.status(400).json({
         success: false,
-        message: "Price must be a positive number"
+        message: "Price must be a positive number",
+      });
+    }
+
+    if (isNaN(quantity) || quantity < 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Quantity must be a non-negative number",
       });
     }
 
@@ -87,8 +104,9 @@ const addItem = async (req, res) => {
       name,
       description,
       price: Number(price),
+      quantity: Number(quantity),
       image: imagesURL,
-      date: Date.now()
+      date: Date.now(),
     };
 
     // Add specific fields based on product type
@@ -96,7 +114,8 @@ const addItem = async (req, res) => {
       if (!season || !inout) {
         return res.status(400).json({
           success: false,
-          message: "Season and indoor/outdoor status are required for flowers and plants"
+          message:
+            "Season and indoor/outdoor status are required for flowers and plants",
         });
       }
 
@@ -105,7 +124,7 @@ const addItem = async (req, res) => {
       if (!validSeasons.includes(season.toLowerCase())) {
         return res.status(400).json({
           success: false,
-          message: "Season must be summer, winter, autumn, or spring"
+          message: "Season must be summer, winter, autumn, or spring",
         });
       }
 
@@ -114,7 +133,7 @@ const addItem = async (req, res) => {
       if (!validInOut.includes(inout.toLowerCase())) {
         return res.status(400).json({
           success: false,
-          message: "Indoor/outdoor status must be 'indoor' or 'outdoor'"
+          message: "Indoor/outdoor status must be 'indoor' or 'outdoor'",
         });
       }
 
@@ -125,7 +144,7 @@ const addItem = async (req, res) => {
       if (!category) {
         return res.status(400).json({
           success: false,
-          message: "Category is required for art and tools"
+          message: "Category is required for art and tools",
         });
       }
       productData.category = category;
@@ -133,7 +152,8 @@ const addItem = async (req, res) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: "Invalid product type. Must be 'flower', 'plant', 'art', or 'tools'"
+        message:
+          "Invalid product type. Must be 'flower', 'plant', 'art', or 'tools'",
       });
     }
 
@@ -150,14 +170,14 @@ const addItem = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Item added successfully",
-      product: newProduct
+      product: newProduct,
     });
   } catch (error) {
     console.error("Add item error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while adding item",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -167,20 +187,23 @@ const updateItem = async (req, res) => {
   try {
     const { productId, type } = req.params;
     const updates = req.body;
-    const sellerId = req.body.sellerId || req.body.sid;
+    const sellerId = req.body.sellerId || req.body.sid || req.body.userId;
 
     if (!productId || !type || !sellerId) {
       return res.status(400).json({
         success: false,
-        message: "Product ID, type, and seller ID are required"
+        message: "Product ID, type, and seller ID are required",
       });
     }
 
     // Validate IDs
-    if (!mongoose.Types.ObjectId.isValid(productId) || !mongoose.Types.ObjectId.isValid(sellerId)) {
+    if (
+      !mongoose.Types.ObjectId.isValid(productId) ||
+      !mongoose.Types.ObjectId.isValid(sellerId)
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Invalid product ID or seller ID"
+        message: "Invalid product ID or seller ID",
       });
     }
 
@@ -189,15 +212,18 @@ const updateItem = async (req, res) => {
     if (!seller) {
       return res.status(404).json({
         success: false,
-        message: "Seller not found"
+        message: "Seller not found",
       });
     }
 
     // Verify seller owns this product
-    if (!seller.inventory[type] || !seller.inventory[type].includes(productId)) {
+    if (
+      !seller.inventory[type] ||
+      !seller.inventory[type].includes(productId)
+    ) {
       return res.status(403).json({
         success: false,
-        message: "You don't have permission to update this product"
+        message: "You don't have permission to update this product",
       });
     }
 
@@ -205,7 +231,7 @@ const updateItem = async (req, res) => {
     if (!productModel) {
       return res.status(400).json({
         success: false,
-        message: "Invalid product type"
+        message: "Invalid product type",
       });
     }
 
@@ -214,7 +240,7 @@ const updateItem = async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found"
+        message: "Product not found",
       });
     }
 
@@ -222,7 +248,14 @@ const updateItem = async (req, res) => {
     if (updates.price && (isNaN(updates.price) || updates.price <= 0)) {
       return res.status(400).json({
         success: false,
-        message: "Price must be a positive number"
+        message: "Price must be a positive number",
+      });
+    }
+
+    if (updates.quantity && (isNaN(updates.quantity) || updates.quantity < 0)) {
+      return res.status(400).json({
+        success: false,
+        message: "Quantity must be a non-negative number",
       });
     }
 
@@ -233,7 +266,7 @@ const updateItem = async (req, res) => {
       const image3 = req.files.image3 && req.files?.image3?.[0];
       const image4 = req.files.image4 && req.files?.image4?.[0];
       const image5 = req.files.image5 && req.files?.image5?.[0];
-      
+
       const images = [image1, image2, image3, image4, image5].filter(
         (item) => item !== undefined
       );
@@ -248,7 +281,7 @@ const updateItem = async (req, res) => {
             return result.secure_url;
           })
         );
-        
+
         updates.image = imagesURL;
       }
     }
@@ -259,7 +292,7 @@ const updateItem = async (req, res) => {
         if (!validSeasons.includes(updates.season.toLowerCase())) {
           return res.status(400).json({
             success: false,
-            message: "Season must be summer, winter, autumn, or spring"
+            message: "Season must be summer, winter, autumn, or spring",
           });
         }
         updates.season = updates.season.toLowerCase();
@@ -270,7 +303,7 @@ const updateItem = async (req, res) => {
         if (!validInOut.includes(updates.inout.toLowerCase())) {
           return res.status(400).json({
             success: false,
-            message: "Indoor/outdoor status must be 'indoor' or 'outdoor'"
+            message: "Indoor/outdoor status must be 'indoor' or 'outdoor'",
           });
         }
         updates.inout = updates.inout.toLowerCase();
@@ -280,12 +313,18 @@ const updateItem = async (req, res) => {
     // Remove fields that shouldn't be updated
     delete updates.sid;
     delete updates.sellerId;
+    delete updates.userId;
     delete updates.type;
     delete updates._id;
 
     // Convert price to Number if present
     if (updates.price) {
       updates.price = Number(updates.price);
+    }
+
+    // Convert quantity to Number if present
+    if (updates.quantity) {
+      updates.quantity = Number(updates.quantity);
     }
 
     // Update product
@@ -298,14 +337,14 @@ const updateItem = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Item updated successfully",
-      product: updatedProduct
+      product: updatedProduct,
     });
   } catch (error) {
     console.error("Update item error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while updating item",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -314,20 +353,23 @@ const updateItem = async (req, res) => {
 const removeItem = async (req, res) => {
   try {
     const { productId, type } = req.params;
-    const sellerId = req.body.sellerId || req.query.sellerId;
+    const sellerId = req.body.sellerId || req.body.userId;
 
     if (!productId || !type || !sellerId) {
       return res.status(400).json({
         success: false,
-        message: "Product ID, type, and seller ID are required"
+        message: "Product ID, type, and seller ID are required",
       });
     }
 
     // Validate IDs
-    if (!mongoose.Types.ObjectId.isValid(productId) || !mongoose.Types.ObjectId.isValid(sellerId)) {
+    if (
+      !mongoose.Types.ObjectId.isValid(productId) ||
+      !mongoose.Types.ObjectId.isValid(sellerId)
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Invalid product ID or seller ID"
+        message: "Invalid product ID or seller ID",
       });
     }
 
@@ -336,15 +378,18 @@ const removeItem = async (req, res) => {
     if (!seller) {
       return res.status(404).json({
         success: false,
-        message: "Seller not found"
+        message: "Seller not found",
       });
     }
 
     // Verify seller owns this product
-    if (!seller.inventory[type] || !seller.inventory[type].includes(productId)) {
+    if (
+      !seller.inventory[type] ||
+      !seller.inventory[type].includes(productId)
+    ) {
       return res.status(403).json({
         success: false,
-        message: "You don't have permission to remove this product"
+        message: "You don't have permission to remove this product",
       });
     }
 
@@ -352,7 +397,7 @@ const removeItem = async (req, res) => {
     if (!productModel) {
       return res.status(400).json({
         success: false,
-        message: "Invalid product type"
+        message: "Invalid product type",
       });
     }
 
@@ -361,6 +406,23 @@ const removeItem = async (req, res) => {
     if (product && product.image && product.image.length > 0) {
       // Here you could add code to delete images from Cloudinary if needed
       // This would involve extracting public_ids from URLs and calling cloudinary.uploader.destroy
+      try {
+        await Promise.all(
+          product.image.map(async (imgUrl) => {
+            // Extract public_id from Cloudinary URL
+            const publicId = imgUrl.split("/").pop().split(".")[0];
+            if (publicId) {
+              await cloudinary.uploader.destroy(publicId);
+            }
+          })
+        );
+      } catch (cloudinaryError) {
+        console.error(
+          "Error deleting images from Cloudinary:",
+          cloudinaryError
+        );
+        // Continue with product deletion even if image deletion fails
+      }
     }
 
     // Remove product from database
@@ -374,14 +436,14 @@ const removeItem = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Item removed successfully"
+      message: "Item removed successfully",
     });
   } catch (error) {
     console.error("Remove item error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while removing item",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -389,12 +451,13 @@ const removeItem = async (req, res) => {
 // Get all items in seller inventory
 const allItem = async (req, res) => {
   try {
-    const sellerId = req.params.sellerId || req.query.sellerId;
+    const sellerId =
+      req.params.sellerId || req.query.sellerId || req.body.userId;
 
     if (!sellerId) {
       return res.status(400).json({
         success: false,
-        message: "Seller ID is required"
+        message: "Seller ID is required",
       });
     }
 
@@ -402,7 +465,7 @@ const allItem = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(sellerId)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid seller ID"
+        message: "Invalid seller ID",
       });
     }
 
@@ -411,7 +474,7 @@ const allItem = async (req, res) => {
     if (!seller) {
       return res.status(404).json({
         success: false,
-        message: "Seller not found"
+        message: "Seller not found",
       });
     }
 
@@ -420,20 +483,20 @@ const allItem = async (req, res) => {
       flower: [],
       plant: [],
       art: [],
-      tools: []
+      tools: [],
     };
 
     // Fetch flowers and plants
     if (inventory.flower && inventory.flower.length > 0) {
       const flowerItems = await flowerModel.find({
-        _id: { $in: inventory.flower }
+        _id: { $in: inventory.flower },
       });
-      
+
       // Separate flowers and plants based on type field
-      flowerItems.forEach(item => {
-        if (item.type === 'flower') {
+      flowerItems.forEach((item) => {
+        if (item.type === "flower") {
           result.flower.push(item);
-        } else if (item.type === 'plant') {
+        } else if (item.type === "plant") {
           result.plant.push(item);
         }
       });
@@ -442,36 +505,36 @@ const allItem = async (req, res) => {
     // Fetch art items
     if (inventory.art && inventory.art.length > 0) {
       result.art = await artModel.find({
-        _id: { $in: inventory.art }
+        _id: { $in: inventory.art },
       });
     }
 
     // Fetch tools
     if (inventory.tools && inventory.tools.length > 0) {
       result.tools = await toolModel.find({
-        _id: { $in: inventory.tools }
+        _id: { $in: inventory.tools },
       });
     }
 
     // Count items
-    const totalItems = 
-      result.flower.length + 
-      result.plant.length + 
-      result.art.length + 
+    const totalItems =
+      result.flower.length +
+      result.plant.length +
+      result.art.length +
       result.tools.length;
 
     return res.status(200).json({
       success: true,
       message: "Inventory fetched successfully",
       count: totalItems,
-      inventory: result
+      inventory: result,
     });
   } catch (error) {
     console.error("Fetch inventory error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while fetching inventory",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -484,7 +547,7 @@ const singleItem = async (req, res) => {
     if (!productId || !type) {
       return res.status(400).json({
         success: false,
-        message: "Product ID and type are required"
+        message: "Product ID and type are required",
       });
     }
 
@@ -492,7 +555,7 @@ const singleItem = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid product ID"
+        message: "Invalid product ID",
       });
     }
 
@@ -500,7 +563,7 @@ const singleItem = async (req, res) => {
     if (!productModel) {
       return res.status(400).json({
         success: false,
-        message: "Invalid product type"
+        message: "Invalid product type",
       });
     }
 
@@ -509,20 +572,20 @@ const singleItem = async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found"
+        message: "Product not found",
       });
     }
 
     return res.status(200).json({
       success: true,
-      product
+      product,
     });
   } catch (error) {
     console.error("Fetch single item error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while fetching item details",
-      error: error.message
+      error: error.message,
     });
   }
 };

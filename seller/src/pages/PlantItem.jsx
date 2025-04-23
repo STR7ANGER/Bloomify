@@ -1,15 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import assets from "../assets/assets.js";
+import { assets } from "../assets/assets";
 
-const FlowerItem = ({ sid }) => {
+// Get the API URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+const PlantItem = () => {
   const [images, setImages] = useState(Array(4).fill(false));
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [season, setSeason] = useState("Spring");
-  const [inout, setInout] = useState("Indoor");
-  const [type, setType] = useState("Flowering");
+  const [season, setSeason] = useState("spring"); // Updated to lowercase to match backend validation
+  const [inout, setInout] = useState("indoor"); // Updated to lowercase to match backend validation
+  const [type, setType] = useState("plant"); // Changed default to match backend's expected values
+  const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [sellerId, setSellerId] = useState("");
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    const tokenData = localStorage.getItem("token");
+
+    if (!userData || !tokenData) {
+      console.error("User data or token not found in local storage");
+      return;
+    }
+
+    try {
+      const parsedUser = JSON.parse(userData);
+      setSellerId(parsedUser.sellerId || "");
+      setToken(tokenData);
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+    }
+  }, []);
 
   const handleImageChange = (index, file) => {
     const newImages = [...images];
@@ -19,54 +45,101 @@ const FlowerItem = ({ sid }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setMessage({ type: "", text: "" });
 
     try {
       const formData = new FormData();
 
-      formData.append("sid", sid);
-      formData.append("type", type);
+      formData.append("sellerId", sellerId);
+      formData.append("type", type); // Using "plant" or "flower" to match backend expectations
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
-      formData.append("season", season);
-      formData.append("inout", inout);
+      formData.append("season", season.toLowerCase()); // Ensure lowercase to match backend validation
+      formData.append("inout", inout.toLowerCase()); // Ensure lowercase to match backend validation
+      formData.append("quantity", quantity);
 
+      // Check if at least one image is selected
+      let hasImage = false;
       // Append only the images that were selected
       images.forEach((image, index) => {
         if (image) {
           formData.append(`image${index + 1}`, image);
+          hasImage = true;
         }
       });
 
-      // Replace with your API endpoint
-      const response = await axios.post("/api/items/flower/add", formData);
+      if (!hasImage) {
+        setMessage({ type: "error", text: "At least one image is required" });
+        setIsLoading(false);
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      // Use the API_URL variable for the request
+      const response = await axios.post(
+        `${API_URL}/api/inventory/add`,
+        formData,
+        config
+      );
 
       if (response.data.success) {
-        console.log("Flower added successfully!");
+        setMessage({ type: "success", text: "Plant added successfully!" });
         // Reset form
         setImages(Array(4).fill(false));
         setName("");
         setDescription("");
         setPrice("");
-        setSeason("Spring");
-        setInout("Indoor");
-        setType("Flowering");
+        setSeason("spring");
+        setInout("indoor");
+        setType("plant");
+        setQuantity(1);
       } else {
-        console.error(response.data.message || "Failed to add flower");
+        setMessage({
+          type: "error",
+          text: response.data.message || "Failed to add plant",
+        });
       }
     } catch (error) {
-      console.error("Error adding flower:", error);
+      console.error("Error adding plant:", error);
+      setMessage({
+        type: "error",
+        text: error.response?.data?.message || "Error adding plant",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // Shared gradient text style
-  const gradientTextStyle = "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400";
-  
+  const gradientTextStyle =
+    "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400";
+
   // Shared input style
-  const inputStyle = "w-full px-4 py-3 bg-white/70 border border-emerald-900/20 rounded-lg text-gray-800 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all duration-300 shadow-sm";
+  const inputStyle =
+    "w-full px-4 py-3 bg-white/70 border border-emerald-900/20 rounded-lg text-gray-800 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all duration-300 shadow-sm";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {message.text && (
+        <div
+          className={`p-4 rounded-lg ${
+            message.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
+
       <div>
         <p className={`text-base font-semibold ${gradientTextStyle} mb-4`}>
           Upload Images
@@ -111,8 +184,8 @@ const FlowerItem = ({ sid }) => {
           value={type}
           className={inputStyle}
         >
-          <option value="Flowering">Flowering</option>
-          <option value="Non-Flowering">Non-Flowering</option>
+          <option value="plant">Plant</option>
+          <option value="flower">Flower</option>
         </select>
       </div>
 
@@ -154,11 +227,10 @@ const FlowerItem = ({ sid }) => {
             value={season}
             className={inputStyle}
           >
-            <option value="Spring">Spring</option>
-            <option value="Summer">Summer</option>
-            <option value="Fall">Fall</option>
-            <option value="Winter">Winter</option>
-            <option value="All Season">All Season</option>
+            <option value="spring">Spring</option>
+            <option value="summer">Summer</option>
+            <option value="autumn">Fall/Autumn</option>
+            <option value="winter">Winter</option>
           </select>
         </div>
 
@@ -171,9 +243,8 @@ const FlowerItem = ({ sid }) => {
             value={inout}
             className={inputStyle}
           >
-            <option value="Indoor">Indoor</option>
-            <option value="Outdoor">Outdoor</option>
-            <option value="Both">Both</option>
+            <option value="indoor">Indoor</option>
+            <option value="outdoor">Outdoor</option>
           </select>
         </div>
 
@@ -194,14 +265,30 @@ const FlowerItem = ({ sid }) => {
         </div>
       </div>
 
+      <div>
+        <p className={`text-base font-semibold ${gradientTextStyle} mb-2`}>
+          Quantity
+        </p>
+        <input
+          className={inputStyle}
+          type="number"
+          placeholder="Enter Quantity"
+          onChange={(e) => setQuantity(e.target.value)}
+          value={quantity}
+          required
+          min="1"
+        />
+      </div>
+
       <button
         type="submit"
-        className="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 text-white rounded-lg font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ease-in-out"
+        disabled={isLoading}
+        className="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 text-white rounded-lg font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ease-in-out disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
       >
-        Add Plant
+        {isLoading ? "Adding Plant..." : "Add Plant"}
       </button>
     </form>
   );
 };
 
-export default FlowerItem;
+export default PlantItem;
