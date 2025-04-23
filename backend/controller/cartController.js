@@ -1,7 +1,7 @@
 import userModel from "../models/userModel.js";
 import flowerModel from "../models/flowerModel.js";
 import artModel from "../models/artModel.js";
-import toolModel from "../models/toolModel.js";
+import toolModel from "../models/toolsModel.js";
 import mongoose from "mongoose";
 
 // Helper function to determine which model to use based on product type

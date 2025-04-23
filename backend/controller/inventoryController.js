@@ -1,7 +1,7 @@
 import sellerModel from "../models/sellerModel.js";
 import flowerModel from "../models/flowerModel.js";
 import artModel from "../models/artModel.js";
-import toolModel from "../models/toolModel.js";
+import toolModel from "../models/toolsModel.js";
 import mongoose from "mongoose";
 import { v2 as cloudinary } from "cloudinary";
 

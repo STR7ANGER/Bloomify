@@ -3,7 +3,6 @@ import cors from "cors";
 import "dotenv/config";
 import connectCloudinary from "./config/cloudinary.js";
 import connectDB from "./config/mongodb.js";
-import adminRouter from "./routes/adminRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import inventoryRouter from "./routes/inventoryRoute.js";
 import orderRouter from "./routes/orderRouter.js";
@@ -21,7 +20,6 @@ app.use(express.json());
 app.use(cors());
 
 //api endpoints
-app.use("api/admin", adminRouter);
 app.use("api/cart", cartRouter);
 app.use("api/inventory", inventoryRouter);
 app.use("api/order", orderRouter);
