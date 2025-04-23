@@ -6,7 +6,6 @@ import Dashboard from "./pages/DashBoard.jsx";
 import Inventory from "./pages/Inventory.jsx";
 import Orders from "./pages/Orders.jsx";
 import AddItems from "./pages/AddItems.jsx";
-import Advertisement from "./pages/Advertisement.jsx";
 
 export const BackendUrl=import.meta.env.VITE_BACKEND_URL;3
 
@@ -24,7 +23,6 @@ const App = () => {
         <Route path="inventory" element={<Inventory />} />
         <Route path="orders" element={<Orders />} />
         <Route path="add-items" element={<AddItems />} />
-        <Route path="advertisement" element={<Advertisement />} />
       </Route>
       
       {/* Catch-all redirect to dashboard */}
