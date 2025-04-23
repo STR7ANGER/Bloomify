@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const SignUp = () => {
   return (
     <div className="relative flex items-center justify-center min-h-screen signup-bg bg-cover bg-center">
-      <div className="absolute inset-0 bg-white/40 backdrop-blur-sm z-0"></div>
+      <div className="absolute inset-0 bg-white/5 backdrop-blur-sm z-0"></div>
 
       <div className="bg-white shadow-lg drop-shadow-xl py-16 px-10 w-[32rem] text-center border border-gray-200 rounded-2xl z-2">
         <Link to="/">

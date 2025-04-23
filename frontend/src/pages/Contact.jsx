@@ -2,8 +2,8 @@ import React from 'react'
 
 const Contact = () => {
   return (
-    <div className='pt-[6rem] bg-products bg-center bg-cover'>
-      <div className="bg-black/70 text-white flex flex-col py-[3.3rem] px-20 items-center">
+    <div className='pt-[6rem] signup-bg bg-center bg-cover'>
+      <div className="bg-black/40 text-white flex flex-col py-[3.3rem] px-20 items-center">
       <div className="w-full p-8 rounded-3xl bg-white/5 border-gray-500 border">
         <h2 className="text-4xl font-semibold leading-10">Contact Us - <span className="text-gray-300">BLOOMIFY</span></h2>
         <p className="mt-2 text-gray-300 leading-10">
