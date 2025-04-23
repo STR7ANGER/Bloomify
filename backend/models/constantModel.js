@@ -5,7 +5,7 @@ const constantSchema = new mongoose.Schema({
   userFee: { type: Number, default: 20, required: true },
   sellerFee: { type: Number, default: 200, required: true },
   adsFee: { type: Number, default: 2, required: true },
-  Symbol: { type: String, default: "₹" },
+  Symbol: { type: String, default: "$" },
 });
 
 const constantModel =
