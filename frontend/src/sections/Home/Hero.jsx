@@ -1,5 +1,4 @@
 import React from "react";
-import pageBg from "../../assets/backgrounds/page-bg.png";
 import { Element } from "react-scroll";
 
 const Hero = () => {

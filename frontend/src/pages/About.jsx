@@ -124,7 +124,7 @@ const About = () => {
                         <img
                           src={pfp}
                           alt={who}
-                          className="w-full h-64 object-contain"
+                          className="w-full h-[30rem] object-cover mx-auto"
                         />
                         <div className="p-6">
                           <div className="flex justify-between items-center mb-2">

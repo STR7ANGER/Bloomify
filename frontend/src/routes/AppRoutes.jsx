@@ -11,6 +11,7 @@ import ProductDetails from "../pages/ProductDetails";
 import Cart from "../pages/Cart";
 import Wishlist from "../pages/Wishlist";
 import UserProfile from "../pages/UserProfile";
+import Checkout from "../pages/Checkout";
 
 const AppRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const AppRoutes = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="*" element={<Home />} /> {/* Fallback route */}

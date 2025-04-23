@@ -33,6 +33,8 @@ import { BsHeart } from "react-icons/bs";
 import { FiHeart } from "react-icons/fi";
 import { BsCart2 } from "react-icons/bs";
 import { BsPerson } from "react-icons/bs";
+import Simmi from "../assets/profile/Akashdeep_Kaur.jpg"
+import Aditya from "../assets/profile/Aditya_Maurya.jpg"
 
 
 export const socials = [
@@ -97,7 +99,7 @@ export const contentData = [
 export const aboutUs = [
   {
     id: "1",
-    pfp: "",
+    pfp: Aditya,
     who: "Aditya Maurya",
     work: "Member",
   },
@@ -109,7 +111,7 @@ export const aboutUs = [
   },
   {
     id: "3",
-    pfp: "",
+    pfp: Simmi,
     who: "Akashdeep Kaur",
     work: "Member",
   },

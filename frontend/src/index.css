@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Gilda+Display&family=Orbitron:wght@400..900&family=Pixelify+Sans:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');@import './fonts.css';
+@import url("https://fonts.googleapis.com/css2?family=Gilda+Display&family=Orbitron:wght@400..900&family=Pixelify+Sans:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import "./fonts.css";
 
 @tailwind base;
 @tailwind components;
@@ -15,11 +16,11 @@ style={{ WebkitTextStroke: "1px black" }}
 */
 
 @layer base {
-    body {
-        background: white;
-        color: black;
-        font-family: "Garet", serif;
-    }
+  body {
+    background: white;
+    color: black;
+    font-family: "Garet", serif;
+  }
 }
 
 @layer components {
@@ -40,31 +41,36 @@ style={{ WebkitTextStroke: "1px black" }}
   /* .nav-li {
     @apply flex items-center justify-center w-full px-10 space-x-10;
   } */
+
+  .signup-bg {
+    background-color: #ffffff;
+    background-image: url("./assets/backgrounds/login.png");
+    
+  }
+
   .bg-products {
-    background-image: url('./assets/backgrounds/about-2.jpg');
+    background-image: url("./assets/backgrounds/about-2.jpg");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
   }
 
   .orbitron {
-    font-family: 'Orbitron', sans-serif;
+    font-family: "Orbitron", sans-serif;
   }
 
   .bg-hero {
-    background-image: url('./assets/backgrounds/hero-1.png');
+    background-image: url("./assets/backgrounds/hero-1.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
   }
   .bg-box {
-    background-image: url('./assets/backgrounds/green-box.png');
+    background-image: url("./assets/backgrounds/green-box.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
   }
-
-
 
   /* .bg-products::before {
     content: "";

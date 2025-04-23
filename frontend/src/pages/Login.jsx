@@ -1,52 +1,49 @@
 import React from "react";
-import bloomifyWhite from "../assets/logos/bloomify-white.png";
 import bloomifyBlack from "../assets/logos/bloomify-black.png";
 import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
-    <div className="flex items-center justify-center h-screen ">
-      <div className="bg-white shadow-lg drop-shadow-xl p-6 w-[40rem] text-center border border-gray-200 rounded-2xl">
+    <div className="relative flex items-center justify-center min-h-screen signup-bg bg-cover bg-center">
+            <div className="absolute inset-0 bg-white/40 backdrop-blur-sm z-0"></div>
+
+      <div className="bg-white shadow-lg drop-shadow-xl py-16 px-10 w-[32rem] text-center border border-gray-200 rounded-2xl">
         <Link to="/">
-          <div className="flex justify-center mb-10">
+          <div className="flex justify-center mb-12">
             <img
               src={bloomifyBlack}
-              className="w-[25rem] h-auto"
+              className="w-[22rem] h-auto"
               alt="bloomify"
             />
           </div>
         </Link>
-        <div className="grid grid-cols-2 gap-2">
-          <input
-            type="text"
-            placeholder="Username"
-            className="p-2 rounded-md border border-gray-300 bg-gray-50 font-light placeholder-gray-800 col-span-2"
-          />
+
+        <div className="grid grid-cols-2 gap-5 text-lg">
 
           <input
             type="email"
             placeholder="Email"
-            className="p-2 rounded-md border border-gray-300 bg-gray-50 font-light col-span-2 placeholder-gray-800"
+            className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal col-span-2 placeholder-gray-400"
           />
+
           <input
             type="password"
             placeholder="Password"
-            className="p-2 rounded-md border border-gray-300 bg-gray-50 font-light placeholder-gray-800 col-span-2"
+            className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal col-span-2 placeholder-gray-400"
           />
 
           <div className="col-span-2 flex justify-center">
-            <button className="bg-[#1E5128] hover:bg-[#118B50] text-white p-2 mt-2 w-full rounded-full col-span-2">
+            <button className="bg-[#021e2a] hover:bg-[#23454f] text-white text-lg p-3 mt-3 w-full rounded-full">
               Log In
             </button>
           </div>
 
-          <p className="text-center col-span-2 mt-5 font-light">
-            <Link to="/" className="text-blue-700 tracking-[-0.03em]">
+          <p className="text-center col-span-2 mt-6 text-base font-normal">
+            <Link to="/" className="text-blue-700 tracking-[-0.03em] font-medium">
               Forgot Password?
             </Link>
           </p>
         </div>
-        <div></div>
       </div>
     </div>
   );
