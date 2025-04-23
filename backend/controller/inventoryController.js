@@ -265,9 +265,8 @@ const updateItem = async (req, res) => {
       const image2 = req.files.image2 && req.files?.image2?.[0];
       const image3 = req.files.image3 && req.files?.image3?.[0];
       const image4 = req.files.image4 && req.files?.image4?.[0];
-      const image5 = req.files.image5 && req.files?.image5?.[0];
 
-      const images = [image1, image2, image3, image4, image5].filter(
+      const images = [image1, image2, image3, image4].filter(
         (item) => item !== undefined
       );
 
@@ -478,7 +477,6 @@ const allItem = async (req, res) => {
       });
     }
 
-    const inventory = seller.inventory;
     const result = {
       flower: [],
       plant: [],
@@ -486,35 +484,24 @@ const allItem = async (req, res) => {
       tools: [],
     };
 
-    // Fetch flowers and plants
-    if (inventory.flower && inventory.flower.length > 0) {
-      const flowerItems = await flowerModel.find({
-        _id: { $in: inventory.flower },
-      });
+    // CHANGE: Directly query each model by sid field instead of using inventory arrays
+    // Get all flowers and plants for this seller
+    const flowerItems = await flowerModel.find({ sid: sellerId });
 
-      // Separate flowers and plants based on type field
-      flowerItems.forEach((item) => {
-        if (item.type === "flower") {
-          result.flower.push(item);
-        } else if (item.type === "plant") {
-          result.plant.push(item);
-        }
-      });
-    }
+    // Separate flowers and plants based on type field
+    flowerItems.forEach((item) => {
+      if (item.type === "flower") {
+        result.flower.push(item);
+      } else if (item.type === "plant") {
+        result.plant.push(item);
+      }
+    });
 
-    // Fetch art items
-    if (inventory.art && inventory.art.length > 0) {
-      result.art = await artModel.find({
-        _id: { $in: inventory.art },
-      });
-    }
+    // Get all art items for this seller
+    result.art = await artModel.find({ sid: sellerId });
 
-    // Fetch tools
-    if (inventory.tools && inventory.tools.length > 0) {
-      result.tools = await toolModel.find({
-        _id: { $in: inventory.tools },
-      });
-    }
+    // Get all tools for this seller
+    result.tools = await toolModel.find({ sid: sellerId });
 
     // Count items
     const totalItems =

@@ -131,10 +131,6 @@ const sellerRegister = async (req, res) => {
       token,
       message: "Seller registered successfully",
       sellerId: seller._id.toString(),
-      name: seller.name,
-      companyName: seller.companyName,
-      comapnyEmail: seller.comapnyEmail,
-      companyNumber: seller.companyNumber,
     });
   } catch (error) {
     console.error("Seller registration error:", error);
@@ -187,10 +183,6 @@ const sellerLogin = async (req, res) => {
       message: "Logged in successfully",
       token,
       sellerId: seller._id.toString(),
-      name: seller.name,
-      companyName: seller.companyName,
-      comapnyEmail: seller.comapnyEmail,
-      companyNumber: seller.companyNumber,
     });
   } catch (error) {
     console.error("Seller login error:", error);
