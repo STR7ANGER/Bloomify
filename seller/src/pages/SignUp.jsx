@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const { register } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     companyEmail: "",
@@ -16,11 +22,13 @@ const SignUp = () => {
       zipCode: "",
       country: ""
     },
-    upi: ""
+    upi: "",
+    terms: false
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
+    
     if (name.includes(".")) {
       const [parent, child] = name.split(".");
       setFormData({
@@ -33,22 +41,99 @@ const SignUp = () => {
     } else {
       setFormData({
         ...formData,
-        [name]: value
+        [name]: type === "checkbox" ? checked : value
       });
     }
   };
 
-  const handleSubmit = (e) => {
+  const validateStep1 = () => {
+    // Validate first step fields based on backend requirements
+    if (!formData.name || formData.name.length < 2) return "Name is required and must be at least 2 characters";
+    if (!formData.companyName || formData.companyName.length < 2) return "Company name is required and must be at least 2 characters";
+    if (!formData.companyEmail) return "Company email is required";
+    if (!formData.companyNumber) return "Company number is required";
+    if (!formData.password) return "Password is required";
+    if (formData.password.length < 8) return "Password must be at least 8 characters long";
+    if (!formData.confirmPassword) return "Please confirm your password";
+    
+    if (formData.password !== formData.confirmPassword) {
+      return "Passwords don't match";
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.companyEmail)) {
+      return "Please enter a valid email address";
+    }
+    
+    // Phone validation - should be numeric
+    if (!/^\d+$/.test(formData.companyNumber)) {
+      return "Company number should contain only digits";
+    }
+    
+    return null; // No errors
+  };
+
+  const validateStep2 = () => {
+    // Validate second step fields based on backend requirements
+    if (!formData.companyAddress.street) return "Street address is required";
+    if (!formData.companyAddress.city) return "City is required";
+    if (!formData.companyAddress.state) return "State is required";
+    if (!formData.companyAddress.zipCode) return "ZIP/Postal code is required";
+    if (!formData.companyAddress.country) return "Country is required";
+    
+    if (!formData.upi || formData.upi.length < 4) {
+      return "Please enter a valid UPI ID (at least 4 characters)";
+    }
+    
+    if (!formData.terms) return "You must agree to the terms and conditions";
+    
+    return null; // No errors
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle signup logic here
-    console.log("Sign up data:", formData);
+    setError("");
+    
+    // Validate form
+    const validationError = validateStep2();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const result = await register(formData);
+      
+      if (result.success) {
+        navigate('/dashboard');
+      } else {
+        setError(result.message || "Registration failed. Please try again.");
+      }
+    } catch (err) {
+      setError('Registration failed. Please try again.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const nextStep = () => {
+    // Validate first step before proceeding
+    const validationError = validateStep1();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    
+    setError("");
     setCurrentStep(currentStep + 1);
   };
 
   const prevStep = () => {
+    setError("");
     setCurrentStep(currentStep - 1);
   };
 
@@ -78,7 +163,7 @@ const SignUp = () => {
                 </div>
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Password
+                    Password (min 8 characters)
                   </label>
                   <input
                     id="password"
@@ -140,12 +225,12 @@ const SignUp = () => {
                 </div>
                 <div>
                   <label htmlFor="companyNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                    Company Number
+                    Company Phone Number
                   </label>
                   <input
                     id="companyNumber"
                     name="companyNumber"
-                    type="number"
+                    type="tel" 
                     value={formData.companyNumber}
                     onChange={handleChange}
                     required
@@ -154,7 +239,7 @@ const SignUp = () => {
                 </div>
                 <div>
                   <label htmlFor="upi" className="block text-sm font-medium text-gray-700 mb-1">
-                    UPI ID
+                    UPI ID (min 4 characters)
                   </label>
                   <input
                     id="upi"
@@ -271,6 +356,8 @@ const SignUp = () => {
                   id="terms"
                   name="terms"
                   type="checkbox"
+                  checked={formData.terms}
+                  onChange={handleChange}
                   required
                   className="h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
                 />
@@ -296,9 +383,10 @@ const SignUp = () => {
               </button>
               <button
                 type="submit"
-                className="py-2 px-4 bg-gradient-to-r from-emerald-600 to-emerald-800 text-white font-medium rounded-lg hover:from-emerald-700 hover:to-emerald-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 shadow-md transition-all"
+                disabled={loading}
+                className="py-2 px-4 bg-gradient-to-r from-emerald-600 to-emerald-800 text-white font-medium rounded-lg hover:from-emerald-700 hover:to-emerald-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 shadow-md transition-all disabled:opacity-75"
               >
-                Sign Up
+                {loading ? "Signing Up..." : "Sign Up"}
               </button>
             </div>
           </>
@@ -344,6 +432,12 @@ const SignUp = () => {
 
         {/* Signup form */}
         <div className="p-8">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 text-red-500 rounded-md text-sm">
+              {error}
+            </div>
+          )}
+          
           {renderProgress()}
           <form onSubmit={handleSubmit} className="space-y-6">
             {renderFormStep()}
@@ -353,9 +447,9 @@ const SignUp = () => {
           <div className="text-center mt-6">
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
-              <a href="#" className="text-emerald-600 hover:text-emerald-800 font-medium hover:underline">
+              <Link to="/login" className="text-emerald-600 hover:text-emerald-800 font-medium hover:underline">
                 Log In
-              </a>
+              </Link>
             </p>
           </div>
         </div>
