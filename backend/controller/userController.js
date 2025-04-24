@@ -41,9 +41,7 @@ const userLogin = async (req, res) => {
       message: "Logged in successfully",
       token,
       userId: user._id.toString(),
-      name: user.name,
-      email: user.email,
-      phoneNumber: user.phoneNumber
+      name: user.name,      
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -134,8 +132,6 @@ const userRegister = async (req, res) => {
       message: "User registered successfully",
       userId: user._id.toString(),
       name: user.name,
-      email: user.email,
-      phoneNumber: user.phoneNumber
     });
   } catch (error) {
     console.error("Registration error:", error);

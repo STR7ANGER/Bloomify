@@ -7,26 +7,34 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     
-    // In a real application, you would validate the credentials against your backend
-    // This is a simplified example for demonstration purposes
-    if (email && password) {
-      // Mock successful login
-      login({
-        email,
-        firstName: "John", // This would typically come from your backend
-        lastName: "Doe",   // This would typically come from your backend
-        id: "user123"      // This would typically come from your backend
-      });
-      navigate("/");
-    } else {
+    if (!email || !password) {
       setError("Please fill in all fields");
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      const result = await login(email, password);
+      
+      if (result.success) {
+        navigate("/");
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError("An error occurred during login. Please try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,8 +82,9 @@ const Login = () => {
             <button 
               type="submit"
               className="bg-[#021e2a] hover:bg-[#23454f] text-white text-lg p-3 mt-3 w-full rounded-full"
+              disabled={loading}
             >
-              Log In
+              {loading ? "Logging in..." : "Log In"}
             </button>
           </div>
 

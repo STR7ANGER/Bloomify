@@ -1,25 +1,26 @@
-import  { useState } from "react";
+import { useState } from "react";
 import bloomifyBlack from "../assets/logos/bloomify-black.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     // Validate form
-    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !phoneNumber) {
       setError("Please fill in all fields");
       return;
     }
@@ -29,16 +30,33 @@ const SignUp = () => {
       return;
     }
 
-    // In a real application, you would submit this data to your backend
-    // This is a simplified example for demonstration purposes
-    login({
-      email,
-      firstName,
-      lastName,
-      id: `user_${Date.now()}` // Generate a mock user ID
-    });
-    
-    navigate("/"); // Redirect to home page after successful signup
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const userData = {
+        name,
+        email,
+        password,
+        phoneNumber
+      };
+      
+      const result = await register(userData);
+      
+      if (result.success) {
+        navigate("/");
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError("An error occurred during registration. Please try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,28 +83,28 @@ const SignUp = () => {
           
           <input
             type="text"
-            placeholder="John"
-            className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal placeholder-gray-400"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-          
-          <input
-            type="text"
-            placeholder="Doe"
-            className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal placeholder-gray-400"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Full Name"
+            className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal col-span-2 placeholder-gray-400"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
           />
           
           <input
             type="email"
-            placeholder="johndoe1234@email.com"
+            placeholder="Email"
             className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal col-span-2 placeholder-gray-400"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal col-span-2 placeholder-gray-400"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             required
           />
           
@@ -112,8 +130,9 @@ const SignUp = () => {
             <button 
               type="submit"
               className="bg-[#021e2a] hover:bg-[#23454f] text-white text-lg p-3 mt-3 w-full rounded-full"
+              disabled={loading}
             >
-              Sign Up
+              {loading ? "Creating Account..." : "Sign Up"}
             </button>
           </div>
 

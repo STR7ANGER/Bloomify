@@ -100,7 +100,7 @@ const Nav = () => {
                                 {currentUser ? "Profile" : "Login"}
                               </span>
                             </button>
-                            
+
                             {/* User dropdown menu - only shown when logged in and dropdown is toggled */}
                             {currentUser && showUserDropdown && (
                               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
@@ -108,7 +108,7 @@ const Nav = () => {
                                 <div className="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-200">
                                   {currentUser.firstName} {currentUser.lastName}
                                 </div>
-                                
+
                                 {/* Orders */}
                                 <Link
                                   to="/order"
@@ -118,7 +118,7 @@ const Nav = () => {
                                   <ShoppingBag size={16} className="mr-2" />
                                   Orders
                                 </Link>
-                                
+
                                 {/* Logout button */}
                                 <button
                                   onClick={handleLogout}
@@ -132,7 +132,7 @@ const Nav = () => {
                           </div>
                         );
                       }
-                      
+
                       // For other icons, use the original code
                       return (
                         <Link
