@@ -8,10 +8,11 @@ import inventoryRouter from "./routes/inventoryRoute.js";
 import orderRouter from "./routes/orderRouter.js";
 import sellerRouter from "./routes/sellerRoute.js";
 import userRouter from "./routes/userRoute.js";
+import productRoute from "./routes/productRoute.js";
 
 // App config
 const app = express();
-const port = process.env.PORT || 5000; 
+const port = process.env.PORT || 5000;
 connectDB();
 connectCloudinary();
 
@@ -19,12 +20,13 @@ connectCloudinary();
 app.use(express.json());
 app.use(cors());
 
-// api endpoints 
+// api endpoints
 app.use("/api/cart", cartRouter);
 app.use("/api/inventory", inventoryRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/seller", sellerRouter);
 app.use("/api/user", userRouter);
+app.use("/api/products", productRoute);
 
 app.get("/", (req, res) => {
   res.send("API Working");

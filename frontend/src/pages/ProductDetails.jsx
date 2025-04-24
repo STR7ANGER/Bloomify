@@ -1,167 +1,594 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
-import { useCart } from "../components/CartContext";
-import { useWishlist } from "../components/WishlistContext";
-import {
-  seasonalProducts,
-  indoorProducts,
-  toolsProducts,
-  nutritionProducts,
-  artProducts,
-} from "../constants";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import ProductCard from "../components/ProductCard"; // Import the ProductCard component
 
-const categoryData = {
-  seasonal: seasonalProducts,
-  indoor: indoorProducts,
-  tools: toolsProducts,
-  nutrition: nutritionProducts,
-  art: artProducts,
-};
-
-function ProductDetails() {
-  const { id } = useParams();
+const ProductDetails = () => {
+  const { productId } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useCart();
-  const { addToWishlist } = useWishlist();
 
   const [product, setProduct] = useState(null);
-  const [relatedProducts, setRelatedProducts] = useState([]);
-  const [isHovered, setIsHovered] = useState(false);
-  const [addedToCart, setAddedToCart] = useState(false);
-  const [addedToWishlist, setAddedToWishlist] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
+
+  // Format price with currency symbol
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(price);
+  };
 
   useEffect(() => {
-    let foundProduct = null;
-    let related = [];
+    const fetchProductDetails = async () => {
+      try {
+        setLoading(true);
 
-    // Search through each category for the product
-    for (const category in categoryData) {
-      foundProduct = categoryData[category].find((p) => p.id.toString() === id);
-      if (foundProduct) {
-        related = categoryData[category]
-          .filter((p) => p.id !== foundProduct.id)
-          .slice(0, 8);
-        break;
+        // Get product details from the backend
+        const API_URL =
+          import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+        const productType = sessionStorage.getItem("lastProductType") || "";
+        const response = await axios.get(
+          `${API_URL}/api/products/details/${productId}${
+            productType ? `?type=${productType}` : ""
+          }`
+        );
+
+        if (response.data.success) {
+          setProduct(response.data.product);
+          // Reset quantity to 1 whenever product changes
+          setQuantity(1);
+
+          // Fetch recommended products
+          fetchRecommendedProducts(response.data.product);
+        } else {
+          setError("Failed to fetch product details");
+        }
+      } catch (err) {
+        console.error("Error fetching product details:", err);
+        setError("An error occurred while fetching product details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (productId) {
+      fetchProductDetails();
+    }
+  }, [productId]);
+
+  const fetchRecommendedProducts = async (currentProduct) => {
+    try {
+      const API_URL =
+        import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
+      // Construct query parameters based on product tags
+      let queryParams = `type=${currentProduct.type}&id=${currentProduct._id}`;
+
+      // Add additional tag parameters based on the product type
+      if (currentProduct.type === "plant" || currentProduct.type === "flower") {
+        if (currentProduct.inout)
+          queryParams += `&inout=${currentProduct.inout}`;
+        if (currentProduct.season)
+          queryParams += `&season=${currentProduct.season}`;
+      } else if (
+        currentProduct.type === "art" ||
+        currentProduct.type === "tools"
+      ) {
+        if (currentProduct.category)
+          queryParams += `&category=${currentProduct.category}`;
+      }
+
+      const response = await axios.get(
+        `${API_URL}/api/products/recommended?${queryParams}`
+      );
+
+      if (response.data.success) {
+        setRecommendedProducts(response.data.products);
+      }
+    } catch (err) {
+      console.error("Error fetching recommended products:", err);
+    }
+  };
+
+  // Get tag color for display
+  const getTagColor = (type, value) => {
+    if (type === "type") {
+      switch (value) {
+        case "flower":
+          return "bg-pink-100 text-pink-800";
+        case "plant":
+          return "bg-green-100 text-green-800";
+        case "art":
+          return "bg-purple-100 text-purple-800";
+        case "tools":
+          return "bg-blue-100 text-blue-800";
+        default:
+          return "bg-gray-100 text-gray-800";
+      }
+    } else if (type === "location") {
+      switch (value) {
+        case "indoor":
+          return "bg-blue-100 text-blue-800";
+        case "outdoor":
+          return "bg-amber-100 text-amber-800";
+        default:
+          return "bg-gray-100 text-gray-800";
+      }
+    } else if (type === "season") {
+      switch (value) {
+        case "spring":
+          return "bg-green-100 text-green-800";
+        case "summer":
+          return "bg-yellow-100 text-yellow-800";
+        case "autumn":
+          return "bg-orange-100 text-orange-800";
+        case "winter":
+          return "bg-blue-100 text-blue-800";
+        default:
+          return "bg-purple-100 text-purple-800";
+      }
+    } else if (type === "category") {
+      switch (value) {
+        case "hand tools":
+          return "bg-amber-100 text-amber-800";
+        case "power tools":
+          return "bg-red-100 text-red-800";
+        case "vase":
+          return "bg-indigo-100 text-indigo-800";
+        case "pot":
+          return "bg-yellow-100 text-yellow-800";
+        case "bouquet":
+          return "bg-pink-100 text-pink-800";
+        case "crafts":
+          return "bg-purple-100 text-purple-800";
+        default:
+          return "bg-gray-100 text-gray-800";
       }
     }
+    return "bg-gray-100 text-gray-800";
+  };
 
-    setProduct(foundProduct);
-    setRelatedProducts(related);
-  }, [id]);
+  const handleIncreaseQuantity = () => {
+    if (product && quantity < product.quantity) {
+      setQuantity(quantity + 1);
+    }
+  };
 
-  if (!product) return <div>Loading...</div>;
+  const handleDecreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
 
   const handleAddToCart = () => {
-    addToCart(product);
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
+    if (!product || product.quantity < 1) return;
+
+    // Add to cart logic
+    console.log(`Adding ${quantity} of ${product.name} to cart`);
+
+    // Example cart implementation
+    const cartItem = {
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      image: product.image?.[0],
+      quantity: quantity,
+    };
+
+    // Save to localStorage as an example
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    // Check if item already exists in cart
+    const existingItemIndex = cart.findIndex((item) => item.id === cartItem.id);
+
+    if (existingItemIndex > -1) {
+      // Update quantity if not exceeding stock
+      const newQuantity = cart[existingItemIndex].quantity + quantity;
+      if (newQuantity <= product.quantity) {
+        cart[existingItemIndex].quantity = newQuantity;
+      } else {
+        alert("Cannot add more items than available in stock");
+        return;
+      }
+    } else {
+      // Add new item to cart
+      cart.push(cartItem);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Added to cart successfully!");
   };
 
-  const handleAddToWishlist = () => {
-    addToWishlist(product);
-    setAddedToWishlist(true);
-    setTimeout(() => setAddedToWishlist(false), 2000);
-  };
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen px-4">
+        <div className="text-red-500 text-xl mb-4">{error}</div>
+        <button
+          onClick={() => navigate("/products")}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Back to Products
+        </button>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen px-4">
+        <div className="text-gray-600 text-xl mb-4">Product not found</div>
+        <button
+          onClick={() => navigate("/products")}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Back to Products
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <section className="pt-[6.5rem]">
-      <div className="container mx-auto p-6">
-        {/* Product Details */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <img
-            src={product.image}
-            alt={product.title}
-            className="w-full h-[400px] object-contain rounded-lg"
-          />
-          <div>
-            <h2 className="text-3xl font-bold text-gray-800">
-              {product.title}
-            </h2>
-            <p className="text-lg text-red-400 font-semibold">
-              {product.price}
-            </p>
-            <p className="mt-4 text-gray-600">{product.description}</p>
+    <div className="container mx-auto mt-32 px-4 py-8">
+      {/* Product Details Card */}
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-12">
+        <div className="md:flex">
+          {/* Product Images */}
+          <div className="md:w-1/2">
+            <div className="h-96 overflow-hidden">
+              <img
+                src={
+                  product.image?.[0] ||
+                  "https://via.placeholder.com/600x400?text=No+Image"
+                }
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-            <div className="flex items-center space-x-4 mt-6">
-              <button
-                className="mt-4 text-white border border-red-400 bg-red-400 hover:bg-red-500 px-6 py-2 rounded-lg"
-                onClick={handleAddToCart}
+            {/* Thumbnail gallery if there are multiple images */}
+            {product.image && product.image.length > 1 && (
+              <div className="flex mt-4 space-x-2 overflow-x-auto p-2">
+                {product.image.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`${product.name} - view ${index + 1}`}
+                    className="h-20 w-20 object-cover rounded cursor-pointer border-2 border-transparent hover:border-green-500"
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Product Info */}
+          <div className="md:w-1/2 p-6">
+            <div className="flex justify-between items-start">
+              <h1 className="text-3xl font-bold text-gray-900">
+                {product.name}
+              </h1>
+              <span className="text-2xl font-bold text-green-600">
+                {formatPrice(product.price)}
+              </span>
+            </div>
+
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mt-4">
+              {/* Type tag */}
+              <span
+                className={`px-3 py-1 text-sm font-medium rounded-full ${getTagColor(
+                  "type",
+                  product.type
+                )}`}
               >
-                {addedToCart ? "Added to Cart" : "Add to Cart"}
-              </button>
-              <button
-                className="mt-4 text-red-400 border border-red-400 transition-all px-6 py-2 rounded-lg"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                onClick={handleAddToWishlist}
-              >
-                <div className="flex items-center space-x-2">
-                  <p>{addedToWishlist ? "Added to Wishlist" : "Wishlist"}</p>
-                  {isHovered ? (
-                    <BsHeartFill
-                      size={20}
-                      className="text-red-400 bg-inherit"
-                    />
-                  ) : (
-                    <BsHeart size={20} className="text-red-400 bg-inherit" />
-                  )}
+                {product.type}
+              </span>
+
+              {/* Location tag (for plants and flowers) */}
+              {(product.type === "plant" || product.type === "flower") &&
+                product.inout && (
+                  <span
+                    className={`px-3 py-1 text-sm font-medium rounded-full ${getTagColor(
+                      "location",
+                      product.inout
+                    )}`}
+                  >
+                    {product.inout}
+                  </span>
+                )}
+
+              {/* Season tag (for plants and flowers) */}
+              {(product.type === "plant" || product.type === "flower") &&
+                product.season && (
+                  <span
+                    className={`px-3 py-1 text-sm font-medium rounded-full ${getTagColor(
+                      "season",
+                      product.season
+                    )}`}
+                  >
+                    {product.season}
+                  </span>
+                )}
+
+              {/* Category tag (for art and tools) */}
+              {(product.type === "art" || product.type === "tools") &&
+                product.category && (
+                  <span
+                    className={`px-3 py-1 text-sm font-medium rounded-full ${getTagColor(
+                      "category",
+                      product.category
+                    )}`}
+                  >
+                    {product.category}
+                  </span>
+                )}
+            </div>
+
+            {/* Stock info */}
+            <div className="mt-4">
+              {product.quantity > 0 ? (
+                <div className="flex items-center">
+                  <span
+                    className={`inline-block w-3 h-3 rounded-full mr-2 ${
+                      product.quantity <= 3 ? "bg-red-500" : "bg-green-500"
+                    }`}
+                  ></span>
+                  <span
+                    className={`text-sm font-medium ${
+                      product.quantity <= 3 ? "text-red-500" : "text-green-500"
+                    }`}
+                  >
+                    {product.quantity <= 3
+                      ? `Low Stock (${product.quantity} left)`
+                      : `In Stock (${product.quantity} available)`}
+                  </span>
                 </div>
+              ) : (
+                <div className="flex items-center">
+                  <span className="inline-block w-3 h-3 rounded-full mr-2 bg-red-500"></span>
+                  <span className="text-sm font-medium text-red-500">
+                    Out of Stock
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            <div className="mt-6">
+              <h3 className="text-lg font-medium text-gray-900">Description</h3>
+              <div className="mt-2 text-gray-600 whitespace-pre-line">
+                {product.description || "No description available."}
+              </div>
+            </div>
+
+            {/* Simple Quantity Selector */}
+            {product.quantity > 0 && (
+              <div className="mt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Quantity
+                </h3>
+                <div className="flex items-center">
+                  <button
+                    onClick={handleDecreaseQuantity}
+                    className="w-10 h-10 bg-gray-200 rounded-l flex items-center justify-center hover:bg-gray-300"
+                    disabled={quantity <= 1}
+                  >
+                    <span className="text-xl font-bold">-</span>
+                  </button>
+
+                  <div className="w-16 h-10 bg-gray-100 flex items-center justify-center border-t border-b border-gray-300">
+                    <span className="font-bold text-gray-800">{quantity}</span>
+                  </div>
+
+                  <button
+                    onClick={handleIncreaseQuantity}
+                    className="w-10 h-10 bg-gray-200 rounded-r flex items-center justify-center hover:bg-gray-300"
+                    disabled={quantity >= product.quantity}
+                  >
+                    <span className="text-xl font-bold">+</span>
+                  </button>
+                </div>
+                <div className="text-sm text-gray-500 mt-1">
+                  Total: {formatPrice(product.price * quantity)}
+                </div>
+              </div>
+            )}
+
+            {/* Add to cart button */}
+            <div className="mt-8">
+              <button
+                onClick={handleAddToCart}
+                className={`w-full py-3 px-6 text-white font-medium rounded ${
+                  product.quantity > 0
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+                disabled={product.quantity <= 0}
+              >
+                {product.quantity > 0
+                  ? `Add to Cart (${quantity})`
+                  : "Out of Stock"}
               </button>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Customer Reviews */}
-        <div className="mt-10">
-          <h3 className="text-xl font-semibold mb-4">Customer Reviews</h3>
-          <div className="space-y-4">
-            {product.reviews?.map((review, index) => (
-              <div key={index} className="border p-4 rounded-lg shadow-sm">
-                <p className="font-semibold">{review.name}</p>
-                <p className="text-sm text-gray-500">{review.comment}</p>
+      {/* Product Details & Specifications */}
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-12 p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          Product Details
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Left column - specifications */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-900 mb-3">
+              Specifications
+            </h3>
+            <div className="space-y-2">
+              <div className="flex border-b border-gray-200 py-2">
+                <span className="font-medium w-1/3 text-gray-600">
+                  Product ID
+                </span>
+                <span className="text-gray-800">{product._id}</span>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Related Products */}
-        <div className="mt-10">
-          <h3 className="text-xl font-semibold mb-4">Related Products</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {relatedProducts.map((related) => (
-              <div
-                key={related.id}
-                className="bg-white rounded-lg shadow-lg border border-gray-300 cursor-pointer group"
-                onClick={() => navigate(`/products/${related.id}`)}
-              >
-                <div className="overflow-hidden rounded-t-lg">
-                  <img
-                    src={related.image}
-                    alt={related.title}
-                    className="w-full h-60 object-cover rounded-t-lg transition-all duration-300 group-hover:scale-110"
-                  />
-                </div>
-                <div className="p-4 relative h-24 md:h-28">
-                  <h4 className="text-lg font-semibold text-gray-700 flex justify-start">
-                    {related.title}
-                  </h4>
-                  <p className="absolute text-base font-semibold text-red-400 mt-2 group-hover:-translate-y-5 group-hover:opacity-0 transition-all duration-300">
-                    {related.price}
-                  </p>
-                  <div className="absolute flex items-center text-sm text-gray-400 mt-4 w-full opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-full group-hover:translate-y-0">
-                    <p className="mr-2 font-semibold">Show Product</p>
-                    <hr className="border-[1px] border-gray-400 w-12" />
+              <div className="flex border-b border-gray-200 py-2">
+                <span className="font-medium w-1/3 text-gray-600">Type</span>
+                <span className="text-gray-800">{product.type || "N/A"}</span>
+              </div>
+              {(product.type === "plant" || product.type === "flower") && (
+                <>
+                  <div className="flex border-b border-gray-200 py-2">
+                    <span className="font-medium w-1/3 text-gray-600">
+                      Location
+                    </span>
+                    <span className="text-gray-800">
+                      {product.inout || "N/A"}
+                    </span>
                   </div>
+                  <div className="flex border-b border-gray-200 py-2">
+                    <span className="font-medium w-1/3 text-gray-600">
+                      Season
+                    </span>
+                    <span className="text-gray-800">
+                      {product.season || "N/A"}
+                    </span>
+                  </div>
+                </>
+              )}
+              {(product.type === "art" || product.type === "tools") && (
+                <div className="flex border-b border-gray-200 py-2">
+                  <span className="font-medium w-1/3 text-gray-600">
+                    Category
+                  </span>
+                  <span className="text-gray-800">
+                    {product.category || "N/A"}
+                  </span>
                 </div>
+              )}
+              <div className="flex border-b border-gray-200 py-2">
+                <span className="font-medium w-1/3 text-gray-600">Price</span>
+                <span className="text-gray-800">
+                  {formatPrice(product.price)}
+                </span>
               </div>
-            ))}
+              <div className="flex py-2">
+                <span className="font-medium w-1/3 text-gray-600">
+                  Availability
+                </span>
+                <span
+                  className={`${
+                    product.quantity > 0 ? "text-green-600" : "text-red-600"
+                  } font-medium`}
+                >
+                  {product.quantity > 0
+                    ? `In Stock (${product.quantity})`
+                    : "Out of Stock"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right column - care information or usage */}
+          <div>
+            {product.type === "plant" || product.type === "flower" ? (
+              <>
+                <h3 className="text-lg font-medium text-gray-900 mb-3">
+                  Care Instructions
+                </h3>
+                <div className="space-y-4 text-gray-700">
+                  <p>
+                    <span className="font-medium">Watering:</span>{" "}
+                    {product.care?.watering ||
+                      "Water regularly, allowing soil to dry slightly between waterings."}
+                  </p>
+                  <p>
+                    <span className="font-medium">Light:</span>{" "}
+                    {product.care?.light || product.inout === "indoor"
+                      ? "Place in bright, indirect light."
+                      : "Prefers full to partial sun exposure."}
+                  </p>
+                  <p>
+                    <span className="font-medium">Temperature:</span>{" "}
+                    {product.care?.temperature ||
+                      "Keep at room temperature, away from cold drafts."}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 className="text-lg font-medium text-gray-900 mb-3">
+                  Additional Information
+                </h3>
+                <div className="space-y-4 text-gray-700">
+                  <p>
+                    This {product.type} is perfect for{" "}
+                    {product.type === "art"
+                      ? "enhancing the beauty of your space"
+                      : "helping you maintain your garden with ease"}
+                    .
+                  </p>
+                  {product.material && (
+                    <p>
+                      <span className="font-medium">Material:</span>{" "}
+                      {product.material}
+                    </p>
+                  )}
+                  {product.dimensions && (
+                    <p>
+                      <span className="font-medium">Dimensions:</span>{" "}
+                      {product.dimensions}
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
-    </section>
+
+      {/* Recommended Products Section */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">You May Also Like</h2>
+
+        {/* Sub-heading explaining recommendation basis */}
+        <p className="text-gray-600 mb-6">
+          {product.type === "plant" || product.type === "flower"
+            ? `Similar ${product.type}s matching ${
+                product.inout ? product.inout + " " : ""
+              }${product.season ? product.season + " " : ""}type`
+            : `Similar ${product.type} items matching ${
+                product.category
+                  ? "the " + product.category + " category"
+                  : "your interests"
+              }`}
+        </p>
+
+        {recommendedProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {recommendedProducts.map((recProduct) => (
+              <ProductCard key={recProduct._id} product={recProduct} />
+            ))}
+          </div>
+        ) : (
+          <div className="bg-gray-50 rounded-lg p-8 text-center">
+            <p className="text-gray-500">Finding similar products for you...</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
-}
+};
 
 export default ProductDetails;
