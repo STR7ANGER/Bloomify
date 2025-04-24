@@ -1,9 +1,46 @@
-import React from "react";
-import bloomifyWhite from "../assets/logos/bloomify-white.png";
+import  { useState } from "react";
 import bloomifyBlack from "../assets/logos/bloomify-black.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError("");
+
+    // Validate form
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    // In a real application, you would submit this data to your backend
+    // This is a simplified example for demonstration purposes
+    login({
+      email,
+      firstName,
+      lastName,
+      id: `user_${Date.now()}` // Generate a mock user ID
+    });
+    
+    navigate("/"); // Redirect to home page after successful signup
+  };
+
   return (
     <div className="relative flex items-center justify-center min-h-screen signup-bg bg-cover bg-center">
       <div className="absolute inset-0 bg-white/5 backdrop-blur-sm z-0"></div>
@@ -18,43 +55,64 @@ const SignUp = () => {
             />
           </div>
         </Link>
-        <div className="grid grid-cols-2 gap-5 text-lg">
+        
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-5 text-lg">
+          {error && (
+            <div className="col-span-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+              {error}
+            </div>
+          )}
+          
           <input
             type="text"
             placeholder="John"
             className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal placeholder-gray-400"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
           />
+          
           <input
             type="text"
             placeholder="Doe"
             className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal placeholder-gray-400"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
           />
+          
           <input
             type="email"
             placeholder="johndoe1234@email.com"
             className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal col-span-2 placeholder-gray-400"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
+          
           <input
             type="password"
             placeholder="Password"
             className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal col-span-2 placeholder-gray-400"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
+          
           <input
             type="password"
             placeholder="Confirm Password"
             className="p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal col-span-2 placeholder-gray-400"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
           />
-          {/* <select
-            id="options"
-            name="options"
-            className="appearance-none p-4 rounded-lg border border-gray-300 bg-gray-50 font-normal col-span-2"
-          >
-            <option value="option1">User</option>
-            <option value="option2">Seller</option>
-          </select> */}
 
           <div className="col-span-2 flex justify-center">
-            <button className="bg-[#021e2a] hover:bg-[#23454f] text-white text-lg p-3 mt-3 w-full rounded-full">
+            <button 
+              type="submit"
+              className="bg-[#021e2a] hover:bg-[#23454f] text-white text-lg p-3 mt-3 w-full rounded-full"
+            >
               Sign Up
             </button>
           </div>
@@ -65,7 +123,7 @@ const SignUp = () => {
               Log In
             </Link>
           </p>
-        </div>
+        </form>
       </div>
     </div>
   );

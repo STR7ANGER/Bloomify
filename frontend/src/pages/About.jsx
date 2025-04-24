@@ -11,7 +11,7 @@ const About = () => {
   return (
     <>
       <section className="min-h-screen mt-[3.5rem] flex justify-center bg-[url('././assets/backgrounds/hero-1.png')] bg-cover bg-center">
-        <h1 class="text-6xl tracking-[0.3em] pt-20 text-white mt-32 text-center max-sm:mt-8 max-sm:px-10">
+        <h1 className="text-6xl tracking-[0.3em] pt-20 text-white mt-32 text-center max-sm:mt-8 max-sm:px-10">
         <TypeAnimation
         sequence={["Where Every Petal Tells a Story", 5000]}
         wrapper="span"

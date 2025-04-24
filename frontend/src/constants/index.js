@@ -27,12 +27,8 @@ import { GiFlowerPot } from "react-icons/gi";
 import { FaSeedling } from "react-icons/fa6";
 import { GiVineFlower } from "react-icons/gi";
 import { GiPorcelainVase } from "react-icons/gi";
-import { MdOutlineShoppingCart } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
-import { BsHeart } from "react-icons/bs";
-import { FiHeart } from "react-icons/fi";
 import { BsCart2 } from "react-icons/bs";
-import { BsPerson } from "react-icons/bs";
 import Simmi from "../assets/profile/Akashdeep_Kaur.jpg"
 import Aditya from "../assets/profile/Aditya_Maurya.jpg"
 
@@ -459,12 +455,6 @@ export const tabs = [
 export const navIcons =[
   {
     id: "1",
-    Icon: BsHeart,
-    label: "Wishlist",
-    path: "/wishlist",
-  },
-  {
-    id: "2",
     Icon: BsCart2,
     label: "Cart",
     path: "/cart",

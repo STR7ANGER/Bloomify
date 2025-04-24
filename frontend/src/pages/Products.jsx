@@ -1,4 +1,4 @@
-import React from 'react'
+
 import ProductsGrid from '../components/ProductsGrid'
 
 const Products = () => {
