@@ -174,7 +174,6 @@ const InventoryManagement = () => {
     setShowForm(true);
   };
 
-  // Submit form for add or edit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -185,8 +184,14 @@ const InventoryManagement = () => {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("sellerId", sellerId);
+
+      // Add sid as the primary seller identifier
+      formDataToSend.append("sid", sellerId);
+
+      // Include the type - this enables changing product type
       formDataToSend.append("type", formData.type);
+
+      // Rest of the form data
       formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("price", formData.price);
@@ -196,7 +201,7 @@ const InventoryManagement = () => {
       if (formData.type === "flower" || formData.type === "plant") {
         formDataToSend.append("season", formData.season);
         formDataToSend.append("inout", formData.inout);
-      } else {
+      } else if (formData.category) {
         formDataToSend.append("category", formData.category);
       }
 
@@ -210,16 +215,24 @@ const InventoryManagement = () => {
       let response;
 
       if (formAction === "add") {
+        console.log("Adding new item with seller ID:", sellerId);
         response = await axios.post(
           `${API_URL}/inventory/add`,
           formDataToSend,
           config
         );
       } else {
+        // For edit operations
+        const originalType = selectedItem.type.toLowerCase();
+        const isTypeChanging = formData.type !== originalType;
+
+        console.log(
+          `Updating product: ${selectedItem._id}, original type: ${originalType}, new type: ${formData.type}, changing: ${isTypeChanging}`
+        );
+
+        // Use the original product type in the URL, not the potentially new type
         response = await axios.put(
-          `${API_URL}/inventory/update/${
-            selectedItem._id
-          }/${selectedItem.type.toLowerCase()}`,
+          `${API_URL}/inventory/update/${selectedItem._id}/${originalType}`,
           formDataToSend,
           config
         );
@@ -229,10 +242,12 @@ const InventoryManagement = () => {
         // Refresh inventory list
         fetchInventory();
         setShowForm(false);
+        setError(null); // Clear any previous errors
       } else {
         setError(response.data.message);
       }
     } catch (err) {
+      console.error("Form submission error:", err);
       setError(err.response?.data?.message || err.message);
     }
   };

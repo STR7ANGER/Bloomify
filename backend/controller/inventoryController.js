@@ -182,17 +182,21 @@ const addItem = async (req, res) => {
   }
 };
 
-// Update items in seller inventory
 const updateItem = async (req, res) => {
   try {
-    const { productId, type } = req.params;
+    const { productId, type: originalType } = req.params;
     const updates = req.body;
-    const sellerId = req.body.sellerId || req.body.sid || req.body.userId;
+    
+    // Extract the potentially new type from the form data
+    const newType = updates.type;
+    
+    // Get sellerId from various possible sources, prioritizing req.body.sid
+    const sellerId = req.body.sid || req.body.sellerId || req.body.userId || req.user?.id;
 
-    if (!productId || !type || !sellerId) {
+    if (!productId || !originalType || !sellerId) {
       return res.status(400).json({
         success: false,
-        message: "Product ID, type, and seller ID are required",
+        message: "Product ID, original type, and seller ID are required",
       });
     }
 
@@ -207,7 +211,7 @@ const updateItem = async (req, res) => {
       });
     }
 
-    // Check if seller exists and owns this product
+    // Check if seller exists
     const seller = await sellerModel.findById(sellerId);
     if (!seller) {
       return res.status(404).json({
@@ -216,32 +220,48 @@ const updateItem = async (req, res) => {
       });
     }
 
+    // Get the appropriate model for the original product type
+    const originalProductModel = getModelByType(originalType);
+    if (!originalProductModel) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid original product type",
+      });
+    }
+
+    // Find product first to check if it exists
+    const product = await originalProductModel.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
     // Verify seller owns this product
-    if (
-      !seller.inventory[type] ||
-      !seller.inventory[type].includes(productId)
-    ) {
+    if (product.sellerId && product.sellerId.toString() !== sellerId.toString()) {
+      console.log(
+        `Access denied: Product ${productId} belongs to seller ${product.sellerId}, not ${sellerId}`
+      );
       return res.status(403).json({
         success: false,
         message: "You don't have permission to update this product",
       });
     }
 
-    const productModel = getModelByType(type);
-    if (!productModel) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid product type",
-      });
-    }
-
-    // Find product
-    const product = await productModel.findById(productId);
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
+    // Handle type change if requested
+    const isTypeChanging = newType && newType !== originalType;
+    let targetProductModel = originalProductModel;
+    
+    if (isTypeChanging) {
+      // Get the model for the new type
+      targetProductModel = getModelByType(newType);
+      if (!targetProductModel) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid new product type",
+        });
+      }
     }
 
     // Validate updates
@@ -261,10 +281,10 @@ const updateItem = async (req, res) => {
 
     // Handle image updates if files are provided
     if (req.files && Object.keys(req.files).length > 0) {
-      const image1 = req.files.image1 && req.files?.image1?.[0];
-      const image2 = req.files.image2 && req.files?.image2?.[0];
-      const image3 = req.files.image3 && req.files?.image3?.[0];
-      const image4 = req.files.image4 && req.files?.image4?.[0];
+      const image1 = req.files.image1 && req.files.image1[0];
+      const image2 = req.files.image2 && req.files.image2[0];
+      const image3 = req.files.image3 && req.files.image3[0];
+      const image4 = req.files.image4 && req.files.image4[0];
 
       const images = [image1, image2, image3, image4].filter(
         (item) => item !== undefined
@@ -281,11 +301,13 @@ const updateItem = async (req, res) => {
           })
         );
 
+        // Only replace images if new ones are uploaded, otherwise keep existing ones
         updates.image = imagesURL;
       }
     }
 
-    if (type === "flower" || type === "plant") {
+    // Type-specific validations
+    if (newType === "flower" || newType === "plant" || (!newType && (originalType === "flower" || originalType === "plant"))) {
       if (updates.season) {
         const validSeasons = ["summer", "winter", "autumn", "spring"];
         if (!validSeasons.includes(updates.season.toLowerCase())) {
@@ -309,29 +331,83 @@ const updateItem = async (req, res) => {
       }
     }
 
-    // Remove fields that shouldn't be updated
-    delete updates.sid;
-    delete updates.sellerId;
-    delete updates.userId;
-    delete updates.type;
-    delete updates._id;
+    // Prepare for database operation
+    // Remove fields that shouldn't be directly updated
+    const cleanUpdates = { ...updates };
+    delete cleanUpdates.sid;
+    delete cleanUpdates.sellerId;
+    delete cleanUpdates.userId;
+    delete cleanUpdates._id;
+    delete cleanUpdates.type; // We'll handle type change separately
 
     // Convert price to Number if present
-    if (updates.price) {
-      updates.price = Number(updates.price);
+    if (cleanUpdates.price) {
+      cleanUpdates.price = Number(cleanUpdates.price);
     }
 
     // Convert quantity to Number if present
-    if (updates.quantity) {
-      updates.quantity = Number(updates.quantity);
+    if (cleanUpdates.quantity) {
+      cleanUpdates.quantity = Number(cleanUpdates.quantity);
     }
 
-    // Update product
-    const updatedProduct = await productModel.findByIdAndUpdate(
-      productId,
-      updates,
-      { new: true, runValidators: true }
-    );
+    let updatedProduct;
+    
+    // If type is changing, we need to handle it specially
+    if (isTypeChanging) {
+      console.log(
+        `Changing product ${productId} type from ${originalType} to ${newType} for seller ${sellerId}`
+      );
+      
+      // Create a new document in the target collection
+      const sourceProduct = product.toObject();
+      delete sourceProduct._id; // Remove the original ID to let MongoDB generate a new one
+      
+      // Create a new product with the merged data from original and updates
+      const newProductData = {
+        ...sourceProduct,
+        ...cleanUpdates,
+        sellerId, // Ensure sellerId is set
+        type: newType, // Set the new type
+      };
+      
+      // Create the new product in the target collection
+      const newProduct = new targetProductModel(newProductData);
+      updatedProduct = await newProduct.save();
+      
+      // Delete the old product
+      await originalProductModel.findByIdAndDelete(productId);
+      
+      // Update seller's inventory arrays
+      if (seller.inventory) {
+        // Remove from old type array
+        if (seller.inventory[originalType]) {
+          seller.inventory[originalType] = seller.inventory[originalType].filter(
+            id => id.toString() !== productId.toString()
+          );
+        }
+        
+        // Add to new type array
+        if (!seller.inventory[newType]) {
+          seller.inventory[newType] = [];
+        }
+        seller.inventory[newType].push(updatedProduct._id);
+        
+        // Save seller
+        await seller.save();
+      }
+    } else {
+      // Regular update without type change
+      console.log(
+        `Updating product ${productId} of type ${originalType} for seller ${sellerId}`
+      );
+      
+      // Update product
+      updatedProduct = await originalProductModel.findByIdAndUpdate(
+        productId,
+        cleanUpdates,
+        { new: true, runValidators: true }
+      );
+    }
 
     return res.status(200).json({
       success: true,

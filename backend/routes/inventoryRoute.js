@@ -20,6 +20,7 @@ inventoryRouter.post("/add", authSeller, upload.fields([
 ]), addItem);
 
 // Update items in the inventory with file upload middleware
+// We keep the route the same but improve the handler
 inventoryRouter.put("/update/:productId/:type", authSeller, upload.fields([
   { name: "image1", maxCount: 1 },
   { name: "image2", maxCount: 1 },
