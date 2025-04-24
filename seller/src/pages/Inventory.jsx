@@ -72,7 +72,7 @@ const InventoryManagement = () => {
   }, []);
 
   // Get API URL and auth data
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const token = localStorage.getItem("token");
 
   // API request configuration
@@ -96,11 +96,11 @@ const InventoryManagement = () => {
     try {
       setIsLoading(true);
       console.log(
-        `Making API request to: ${API_URL}/inventory/all/${sellerIdToUse}`
+        `Making API request to: ${API_URL}/api/inventory/all/${sellerIdToUse}`
       );
 
       const response = await axios.get(
-        `${API_URL}/inventory/all/${sellerIdToUse}`,
+        `${API_URL}/api/inventory/all/${sellerIdToUse}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -217,7 +217,7 @@ const InventoryManagement = () => {
       if (formAction === "add") {
         console.log("Adding new item with seller ID:", sellerId);
         response = await axios.post(
-          `${API_URL}/inventory/add`,
+          `${API_URL}/api/inventory/add`,
           formDataToSend,
           config
         );
@@ -232,7 +232,7 @@ const InventoryManagement = () => {
 
         // Use the original product type in the URL, not the potentially new type
         response = await axios.put(
-          `${API_URL}/inventory/update/${selectedItem._id}/${originalType}`,
+          `${API_URL}/api/inventory/update/${selectedItem._id}/${originalType}`,
           formDataToSend,
           config
         );
@@ -263,7 +263,7 @@ const InventoryManagement = () => {
       const token = localStorage.getItem("token"); // or however you store your token
 
       // Construct the URL with product ID and type as params
-      const url = `${API_URL}/inventory/remove/${
+      const url = `${API_URL}/api/inventory/remove/${
         item._id
       }/${item.type.toLowerCase()}`;
 
