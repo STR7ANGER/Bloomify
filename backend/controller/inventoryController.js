@@ -186,12 +186,13 @@ const updateItem = async (req, res) => {
   try {
     const { productId, type: originalType } = req.params;
     const updates = req.body;
-    
+
     // Extract the potentially new type from the form data
     const newType = updates.type;
-    
+
     // Get sellerId from various possible sources, prioritizing req.body.sid
-    const sellerId = req.body.sid || req.body.sellerId || req.body.userId || req.user?.id;
+    const sellerId =
+      req.body.sid || req.body.sellerId || req.body.userId || req.user?.id;
 
     if (!productId || !originalType || !sellerId) {
       return res.status(400).json({
@@ -239,7 +240,10 @@ const updateItem = async (req, res) => {
     }
 
     // Verify seller owns this product
-    if (product.sellerId && product.sellerId.toString() !== sellerId.toString()) {
+    if (
+      product.sellerId &&
+      product.sellerId.toString() !== sellerId.toString()
+    ) {
       console.log(
         `Access denied: Product ${productId} belongs to seller ${product.sellerId}, not ${sellerId}`
       );
@@ -252,7 +256,7 @@ const updateItem = async (req, res) => {
     // Handle type change if requested
     const isTypeChanging = newType && newType !== originalType;
     let targetProductModel = originalProductModel;
-    
+
     if (isTypeChanging) {
       // Get the model for the new type
       targetProductModel = getModelByType(newType);
@@ -307,7 +311,11 @@ const updateItem = async (req, res) => {
     }
 
     // Type-specific validations
-    if (newType === "flower" || newType === "plant" || (!newType && (originalType === "flower" || originalType === "plant"))) {
+    if (
+      newType === "flower" ||
+      newType === "plant" ||
+      (!newType && (originalType === "flower" || originalType === "plant"))
+    ) {
       if (updates.season) {
         const validSeasons = ["summer", "winter", "autumn", "spring"];
         if (!validSeasons.includes(updates.season.toLowerCase())) {
@@ -351,17 +359,17 @@ const updateItem = async (req, res) => {
     }
 
     let updatedProduct;
-    
+
     // If type is changing, we need to handle it specially
     if (isTypeChanging) {
       console.log(
         `Changing product ${productId} type from ${originalType} to ${newType} for seller ${sellerId}`
       );
-      
+
       // Create a new document in the target collection
       const sourceProduct = product.toObject();
       delete sourceProduct._id; // Remove the original ID to let MongoDB generate a new one
-      
+
       // Create a new product with the merged data from original and updates
       const newProductData = {
         ...sourceProduct,
@@ -369,29 +377,29 @@ const updateItem = async (req, res) => {
         sellerId, // Ensure sellerId is set
         type: newType, // Set the new type
       };
-      
+
       // Create the new product in the target collection
       const newProduct = new targetProductModel(newProductData);
       updatedProduct = await newProduct.save();
-      
+
       // Delete the old product
       await originalProductModel.findByIdAndDelete(productId);
-      
+
       // Update seller's inventory arrays
       if (seller.inventory) {
         // Remove from old type array
         if (seller.inventory[originalType]) {
-          seller.inventory[originalType] = seller.inventory[originalType].filter(
-            id => id.toString() !== productId.toString()
-          );
+          seller.inventory[originalType] = seller.inventory[
+            originalType
+          ].filter((id) => id.toString() !== productId.toString());
         }
-        
+
         // Add to new type array
         if (!seller.inventory[newType]) {
           seller.inventory[newType] = [];
         }
         seller.inventory[newType].push(updatedProduct._id);
-        
+
         // Save seller
         await seller.save();
       }
@@ -400,7 +408,7 @@ const updateItem = async (req, res) => {
       console.log(
         `Updating product ${productId} of type ${originalType} for seller ${sellerId}`
       );
-      
+
       // Update product
       updatedProduct = await originalProductModel.findByIdAndUpdate(
         productId,
@@ -424,11 +432,13 @@ const updateItem = async (req, res) => {
   }
 };
 
-// Remove items from seller inventory
 const removeItem = async (req, res) => {
   try {
     const { productId, type } = req.params;
-    const sellerId = req.body.sellerId || req.body.userId;
+
+    // Get sellerId from various possible sources, prioritizing req.body.sid
+    const sellerId =
+      req.body.sid || req.body.sellerId || req.body.userId || req.user?.id;
 
     if (!productId || !type || !sellerId) {
       return res.status(400).json({
@@ -448,7 +458,7 @@ const removeItem = async (req, res) => {
       });
     }
 
-    // Check if seller exists and owns this product
+    // Check if seller exists
     const seller = await sellerModel.findById(sellerId);
     if (!seller) {
       return res.status(404).json({
@@ -457,17 +467,7 @@ const removeItem = async (req, res) => {
       });
     }
 
-    // Verify seller owns this product
-    if (
-      !seller.inventory[type] ||
-      !seller.inventory[type].includes(productId)
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: "You don't have permission to remove this product",
-      });
-    }
-
+    // Get the product model based on type
     const productModel = getModelByType(type);
     if (!productModel) {
       return res.status(400).json({
@@ -476,11 +476,47 @@ const removeItem = async (req, res) => {
       });
     }
 
-    // Find the product to get image URLs before deletion
+    // Find the product first
     const product = await productModel.findById(productId);
-    if (product && product.image && product.image.length > 0) {
-      // Here you could add code to delete images from Cloudinary if needed
-      // This would involve extracting public_ids from URLs and calling cloudinary.uploader.destroy
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Verify seller owns this product
+    if (
+      product.sellerId &&
+      product.sellerId.toString() !== sellerId.toString()
+    ) {
+      console.log(
+        `Access denied: Product ${productId} belongs to seller ${product.sellerId}, not ${sellerId}`
+      );
+      return res.status(403).json({
+        success: false,
+        message: "You don't have permission to remove this product",
+      });
+    }
+
+    // Additional inventory check (as a secondary verification)
+    const inventoryType = type.toLowerCase();
+    const productInInventory =
+      seller.inventory &&
+      seller.inventory[inventoryType] &&
+      seller.inventory[inventoryType].some(
+        (id) => id.toString() === productId.toString()
+      );
+
+    if (!productInInventory) {
+      console.log(
+        `Product ${productId} not found in seller ${sellerId}'s inventory`
+      );
+      // Don't fail here, just log the inconsistency
+    }
+
+    // If product has images, delete them from Cloudinary
+    if (product.image && product.image.length > 0) {
       try {
         await Promise.all(
           product.image.map(async (imgUrl) => {
@@ -491,6 +527,7 @@ const removeItem = async (req, res) => {
             }
           })
         );
+        console.log(`Deleted ${product.image.length} image(s) from Cloudinary`);
       } catch (cloudinaryError) {
         console.error(
           "Error deleting images from Cloudinary:",
@@ -502,12 +539,18 @@ const removeItem = async (req, res) => {
 
     // Remove product from database
     await productModel.findByIdAndDelete(productId);
+    console.log(`Deleted product ${productId} of type ${type}`);
 
     // Remove product from seller's inventory
-    seller.inventory[type] = seller.inventory[type].filter(
-      (id) => id.toString() !== productId.toString()
-    );
-    await seller.save();
+    if (seller.inventory && seller.inventory[inventoryType]) {
+      seller.inventory[inventoryType] = seller.inventory[inventoryType].filter(
+        (id) => id.toString() !== productId.toString()
+      );
+      await seller.save();
+      console.log(
+        `Removed product ${productId} from seller ${sellerId}'s inventory`
+      );
+    }
 
     return res.status(200).json({
       success: true,
@@ -602,55 +645,4 @@ const allItem = async (req, res) => {
   }
 };
 
-// Get single item details
-const singleItem = async (req, res) => {
-  try {
-    const { productId, type } = req.params;
-
-    if (!productId || !type) {
-      return res.status(400).json({
-        success: false,
-        message: "Product ID and type are required",
-      });
-    }
-
-    // Validate product ID
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid product ID",
-      });
-    }
-
-    const productModel = getModelByType(type);
-    if (!productModel) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid product type",
-      });
-    }
-
-    // Find product
-    const product = await productModel.findById(productId);
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      product,
-    });
-  } catch (error) {
-    console.error("Fetch single item error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error while fetching item details",
-      error: error.message,
-    });
-  }
-};
-
-export { addItem, updateItem, removeItem, allItem, singleItem };
+export { addItem, updateItem, removeItem, allItem };

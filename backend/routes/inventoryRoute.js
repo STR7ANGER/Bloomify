@@ -4,7 +4,6 @@ import {
   updateItem,
   removeItem,
   allItem,
-  singleItem
 } from "../controller/inventoryController.js";
 import authSeller from "../middleware/sellerAuth.js";
 import upload from "../middleware/upload.js";
@@ -34,7 +33,6 @@ inventoryRouter.delete("/remove/:productId/:type", authSeller, removeItem);
 // Get list of all items in the inventory
 inventoryRouter.get("/all/:sellerId", authSeller, allItem);
 
-// Get single item details
-inventoryRouter.get("/item/:productId/:type", singleItem);
+
 
 export default inventoryRouter;

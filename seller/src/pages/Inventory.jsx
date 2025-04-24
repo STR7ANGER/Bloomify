@@ -259,19 +259,25 @@ const InventoryManagement = () => {
     }
 
     try {
-      const response = await axios.delete(
-        `${API_URL}/inventory/remove/${item._id}/${item.type.toLowerCase()}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          data: { sellerId },
-        }
-      );
+      // Get token from local storage or wherever it's stored in your app
+      const token = localStorage.getItem("token"); // or however you store your token
+
+      // Construct the URL with product ID and type as params
+      const url = `${API_URL}/inventory/remove/${
+        item._id
+      }/${item.type.toLowerCase()}`;
+
+      // Make delete request with authorization header and seller ID in the body
+      const response = await axios.delete(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        data: { sellerId }, // This should be defined in the parent scope
+      });
 
       if (response.data.success) {
-        // Refresh inventory list
+        // Refresh inventory list on successful deletion
         fetchInventory();
       } else {
         setError(response.data.message);
