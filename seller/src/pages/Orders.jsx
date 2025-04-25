@@ -29,27 +29,20 @@ const Orders = () => {
           const itemCount = Math.floor(Math.random() * 4) + 1;
           const items = Array.from({ length: itemCount }, (_, j) => {
             const products = [
-              { name: "Organic T-Shirt", category: "Clothing", price: 24.99 },
+              { name: "Rose Bouquet", category: "Flowers", price: 29.99 },
+              { name: "Ceramic Plant Pot", category: "Pots", price: 19.99 },
+              { name: "Garden Trowel", category: "Tools", price: 12.99 },
               {
-                name: "Eco-Friendly Water Bottle",
-                category: "Accessories",
-                price: 19.99,
+                name: "Succulent Collection",
+                category: "Plants",
+                price: 24.99,
               },
-              {
-                name: "Bamboo Toothbrush",
-                category: "Personal Care",
-                price: 4.99,
-              },
-              {
-                name: "Reusable Coffee Cup",
-                category: "Kitchen",
-                price: 14.99,
-              },
-              {
-                name: "Sustainable Notebook",
-                category: "Stationery",
-                price: 9.99,
-              },
+              { name: "Crystal Flower Vase", category: "Vases", price: 34.99 },
+              { name: "Pruning Shears", category: "Tools", price: 15.99 },
+              { name: "Orchid Plant", category: "Plants", price: 39.99 },
+              { name: "Tulip Arrangement", category: "Bouquets", price: 27.99 },
+              { name: "Terra Cotta Pot Set", category: "Pots", price: 22.99 },
+              { name: "Glass Terrarium", category: "Containers", price: 32.99 },
             ];
 
             const randomProduct =
@@ -77,14 +70,17 @@ const Orders = () => {
           orderDate.setDate(today.getDate() - randomDaysAgo);
 
           return {
-            id: `ORD-${String(i + 1000).padStart(4, "0")}`,
+            id: `PLT-${String(i + 1000).padStart(4, "0")}`,
             customerName: [
-              "John Smith",
               "Emma Johnson",
               "Michael Williams",
               "Sarah Brown",
               "David Jones",
-            ][Math.floor(Math.random() * 5)],
+              "Liz Chen",
+              "Robert Garcia",
+              "Amy Taylor",
+              "James Wilson",
+            ][Math.floor(Math.random() * 8)],
             date: orderDate.toISOString().split("T")[0],
             status: randomStatus,
             items: items,
@@ -173,9 +169,11 @@ const Orders = () => {
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Order Management
+            Plant Shop Order Management
           </h1>
-          <p className="text-gray-500">Track and manage customer orders</p>
+          <p className="text-gray-500">
+            Track and manage customer plant orders
+          </p>
         </div>
 
         {/* Filter and Search Bar */}
@@ -254,10 +252,10 @@ const Orders = () => {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-gray-800 mb-1">
-              Loading orders...
+              Loading plant orders...
             </h3>
             <p className="text-gray-500">
-              Please wait while we fetch your order data.
+              Please wait while we fetch your plant order data.
             </p>
           </div>
         )}
@@ -283,7 +281,7 @@ const Orders = () => {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-gray-800 mb-1">
-              Error fetching orders
+              Error fetching plant orders
             </h3>
             <p className="text-gray-500">{error}</p>
             <button
@@ -407,7 +405,7 @@ const Orders = () => {
                   </svg>
                 </div>
                 <h3 className="text-lg font-medium text-gray-800 mb-1">
-                  No orders found
+                  No plant orders found
                 </h3>
                 <p className="text-gray-500">
                   Try adjusting your search or filter to find what you're
