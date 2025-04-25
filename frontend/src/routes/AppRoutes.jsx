@@ -6,7 +6,6 @@ import Contact from "../pages/Contact";
 import SignUp from "../pages/SignUp";
 import Login from "../pages/Login";
 import Cart from "../pages/Cart";
-import Wishlist from "../pages/Wishlist";
 import UserProfile from "../pages/UserProfile";
 import Checkout from "../pages/Checkout";
 import Orders from "../pages/Orders";
@@ -24,7 +23,6 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout" element={<Checkout />} />
-      <Route path="/wishlist" element={<Wishlist />} />
       <Route path="/profile" element={<UserProfile />} />
       <Route path="/order" element={<Orders />} />
       <Route path="/product/:productId" element={<ProductDetails />} />

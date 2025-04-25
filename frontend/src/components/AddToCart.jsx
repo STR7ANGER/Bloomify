@@ -7,7 +7,7 @@ const AddToCart = ({ product, quantity = 1 }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Get user ID from localStorage or session with better validation
+  // Get user ID from localStorage with better validation
   const getUserId = () => {
     try {
       const userStr = localStorage.getItem("user");
@@ -24,7 +24,7 @@ const AddToCart = ({ product, quantity = 1 }) => {
   // Get token with validation
   const getToken = () => {
     const token = localStorage.getItem("token");
-    return token && token.length > 10 ? token : null; // Basic validation that token exists and has reasonable length
+    return token && token.length > 10 ? token : null;
   };
 
   const handleAddToCart = async () => {
@@ -69,13 +69,14 @@ const AddToCart = ({ product, quantity = 1 }) => {
       
       const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
       
-      // Send request with proper validation
+      // Include userId in the request body
       const response = await axios.post(
         `${API_URL}/api/cart/add`,
         {
+          userId: userId,
           productId: product._id,
           productType: product.type,
-          quantity: parseInt(quantity) // Ensure quantity is a number
+          quantity: parseInt(quantity)
         },
         {
           headers: {
@@ -85,12 +86,10 @@ const AddToCart = ({ product, quantity = 1 }) => {
         }
       );
 
-      // Validate response
       if (response.data && response.data.success) {
-        // Show success message
         alert("Added to cart successfully!");
         
-        // Update cart count if you have an app-wide state manager
+        // Optional: Update local cart count if you have app-wide state
         // Example: dispatch({ type: 'UPDATE_CART_COUNT' });
       } else {
         throw new Error(response.data?.message || "Failed to add item to cart");
@@ -98,25 +97,19 @@ const AddToCart = ({ product, quantity = 1 }) => {
     } catch (err) {
       console.error("Error adding to cart:", err);
       
-      // Handle different error types
       if (err.response) {
-        // Server responded with error status
         if (err.response.status === 401) {
-          // Unauthorized - token expired or invalid
-          localStorage.removeItem("token"); // Clear invalid token
+          localStorage.removeItem("token");
           setError("Your session has expired. Please log in again.");
           setTimeout(() => navigate("/login"), 2000);
         } else if (err.response.status === 400) {
-          // Bad request - validation error
           setError(err.response.data?.message || "Invalid request data");
         } else {
           setError(err.response.data?.message || "Server error occurred");
         }
       } else if (err.request) {
-        // Request made but no response received
         setError("No response from server. Please check your connection.");
       } else {
-        // Error in request setup
         setError(err.message || "Error adding item to cart");
       }
     } finally {

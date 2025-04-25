@@ -1,4 +1,4 @@
-import { useCart } from "../components/CartContext";
+import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaStripe } from "react-icons/fa";
