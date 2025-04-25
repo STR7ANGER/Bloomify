@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import ProductCard from "../components/ProductCard"; // Import the ProductCard component
+import AddToCart from "../components/AddToCart"; // Import the AddToCart component
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -11,7 +11,7 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [recommendedProducts, setRecommendedProducts] = useState([]);
+
 
   // Format price with currency symbol
   const formatPrice = (price) => {
@@ -42,7 +42,7 @@ const ProductDetails = () => {
           setQuantity(1);
 
           // Fetch recommended products
-          fetchRecommendedProducts(response.data.product);
+          
         } else {
           setError("Failed to fetch product details");
         }
@@ -59,39 +59,7 @@ const ProductDetails = () => {
     }
   }, [productId]);
 
-  const fetchRecommendedProducts = async (currentProduct) => {
-    try {
-      const API_URL =
-        import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
-      // Construct query parameters based on product tags
-      let queryParams = `type=${currentProduct.type}&id=${currentProduct._id}`;
-
-      // Add additional tag parameters based on the product type
-      if (currentProduct.type === "plant" || currentProduct.type === "flower") {
-        if (currentProduct.inout)
-          queryParams += `&inout=${currentProduct.inout}`;
-        if (currentProduct.season)
-          queryParams += `&season=${currentProduct.season}`;
-      } else if (
-        currentProduct.type === "art" ||
-        currentProduct.type === "tools"
-      ) {
-        if (currentProduct.category)
-          queryParams += `&category=${currentProduct.category}`;
-      }
-
-      const response = await axios.get(
-        `${API_URL}/api/products/recommended?${queryParams}`
-      );
-
-      if (response.data.success) {
-        setRecommendedProducts(response.data.products);
-      }
-    } catch (err) {
-      console.error("Error fetching recommended products:", err);
-    }
-  };
 
   // Get tag color for display
   const getTagColor = (type, value) => {
@@ -161,45 +129,6 @@ const ProductDetails = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
-  };
-
-  const handleAddToCart = () => {
-    if (!product || product.quantity < 1) return;
-
-    // Add to cart logic
-    console.log(`Adding ${quantity} of ${product.name} to cart`);
-
-    // Example cart implementation
-    const cartItem = {
-      id: product._id,
-      name: product.name,
-      price: product.price,
-      image: product.image?.[0],
-      quantity: quantity,
-    };
-
-    // Save to localStorage as an example
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-    // Check if item already exists in cart
-    const existingItemIndex = cart.findIndex((item) => item.id === cartItem.id);
-
-    if (existingItemIndex > -1) {
-      // Update quantity if not exceeding stock
-      const newQuantity = cart[existingItemIndex].quantity + quantity;
-      if (newQuantity <= product.quantity) {
-        cart[existingItemIndex].quantity = newQuantity;
-      } else {
-        alert("Cannot add more items than available in stock");
-        return;
-      }
-    } else {
-      // Add new item to cart
-      cart.push(cartItem);
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Added to cart successfully!");
   };
 
   if (loading) {
@@ -404,21 +333,9 @@ const ProductDetails = () => {
               </div>
             )}
 
-            {/* Add to cart button */}
+            {/* Replace the old add to cart button with our new component */}
             <div className="mt-8">
-              <button
-                onClick={handleAddToCart}
-                className={`w-full py-3 px-6 text-white font-medium rounded ${
-                  product.quantity > 0
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "bg-gray-400 cursor-not-allowed"
-                }`}
-                disabled={product.quantity <= 0}
-              >
-                {product.quantity > 0
-                  ? `Add to Cart (${quantity})`
-                  : "Out of Stock"}
-              </button>
+              <AddToCart product={product} quantity={quantity} />
             </div>
           </div>
         </div>
@@ -556,36 +473,6 @@ const ProductDetails = () => {
             )}
           </div>
         </div>
-      </div>
-
-      {/* Recommended Products Section */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">You May Also Like</h2>
-
-        {/* Sub-heading explaining recommendation basis */}
-        <p className="text-gray-600 mb-6">
-          {product.type === "plant" || product.type === "flower"
-            ? `Similar ${product.type}s matching ${
-                product.inout ? product.inout + " " : ""
-              }${product.season ? product.season + " " : ""}type`
-            : `Similar ${product.type} items matching ${
-                product.category
-                  ? "the " + product.category + " category"
-                  : "your interests"
-              }`}
-        </p>
-
-        {recommendedProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {recommendedProducts.map((recProduct) => (
-              <ProductCard key={recProduct._id} product={recProduct} />
-            ))}
-          </div>
-        ) : (
-          <div className="bg-gray-50 rounded-lg p-8 text-center">
-            <p className="text-gray-500">Finding similar products for you...</p>
-          </div>
-        )}
       </div>
     </div>
   );

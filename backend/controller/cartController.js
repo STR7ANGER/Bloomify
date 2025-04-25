@@ -65,35 +65,65 @@ const addToCart = async (req, res) => {
         message: "Product not found"
       });
     }
+    
+    // Check if product is in stock
+    if (product.quantity < quantity) {
+      return res.status(400).json({
+        success: false,
+        message: `Insufficient stock. Only ${product.quantity} items available.`
+      });
+    }
 
     // Initialize cartData if empty
     if (!user.cartData) {
       user.cartData = {};
     }
-
-    // Create a cart item entry
-    const cartItem = {
-      productId,
-      productType,
-      quantity,
-      price: product.price,
-      name: product.name,
-      image: product.image[0], // Store first image for cart display
-      totalPrice: product.price * quantity,
-      addedAt: new Date()
-    };
-
-    // Generate a unique cart item ID
-    const cartItemId = new mongoose.Types.ObjectId().toString();
     
-    // Add to cart
-    user.cartData[cartItemId] = cartItem;
+    // Check if product already exists in cart
+    let existingItemId = null;
+    for (const itemId in user.cartData) {
+      const item = user.cartData[itemId];
+      if (item.productId.toString() === productId && item.productType === productType) {
+        existingItemId = itemId;
+        break;
+      }
+    }
+    
+    let cartItemId;
+    let cartItem;
+    
+    if (existingItemId) {
+      // Update existing cart item
+      cartItem = user.cartData[existingItemId];
+      cartItem.quantity += parseInt(quantity);
+      cartItem.totalPrice = product.price * cartItem.quantity;
+      cartItem.updatedAt = new Date();
+      cartItemId = existingItemId;
+    } else {
+      // Create a cart item entry
+      cartItem = {
+        productId,
+        productType,
+        quantity: parseInt(quantity),
+        price: product.price,
+        name: product.name,
+        image: product.image[0], // Store first image for cart display
+        totalPrice: product.price * quantity,
+        addedAt: new Date()
+      };
+
+      // Generate a unique cart item ID
+      cartItemId = new mongoose.Types.ObjectId().toString();
+      
+      // Add to cart
+      user.cartData[cartItemId] = cartItem;
+    }
     
     await user.save();
 
     return res.status(200).json({
       success: true,
-      message: "Item added to cart successfully",
+      message: existingItemId ? "Cart item quantity updated" : "Item added to cart successfully",
       cartItemId,
       cartItem
     });
@@ -209,7 +239,7 @@ const updateCart = async (req, res) => {
     }
 
     // Update item quantity
-    user.cartData[cartItemId].quantity = quantity;
+    user.cartData[cartItemId].quantity = parseInt(quantity);
     user.cartData[cartItemId].totalPrice = user.cartData[cartItemId].price * quantity;
     
     await user.save();
