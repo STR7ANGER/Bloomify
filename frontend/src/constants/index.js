@@ -31,6 +31,7 @@ import { VscAccount } from "react-icons/vsc";
 import { BsCart2 } from "react-icons/bs";
 import Simmi from "../assets/profile/Akashdeep_Kaur.jpg"
 import Aditya from "../assets/profile/Aditya_Maurya.jpg"
+import Arkadip from "../assets/profile/Arkadip_Das.jpg"
 
 
 export const socials = [
@@ -101,7 +102,7 @@ export const aboutUs = [
   },
   {
     id: "2",
-    pfp: "",
+    pfp: Arkadip,
     who: "Arkadip Das",
     work: "Member",
   },
